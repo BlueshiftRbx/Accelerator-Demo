@@ -8,7 +8,7 @@ local TestController = {}
 
 
 function TestController:Start()
-
+	error("Help")
 end
 
 
