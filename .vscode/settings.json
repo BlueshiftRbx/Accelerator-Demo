@@ -1,6 +1,13 @@
 {
-  "files.exclude": {
-    "src/_framework/": true,
-    ".vscode": true
-  }
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false, // Force tabs
+	"editor.detectIndentation": false, // Prevent overriding
+
+	"files.insertFinalNewline": true,
+	"files.trimFinalNewlines": true,
+	"files.trimTrailingWhitespace": true,
+
+	"files.exclude": {
+		"src/_framework/": true
+	}
 }
