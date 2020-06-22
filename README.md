@@ -1,4 +1,4 @@
-# Accelerator
+![Logo](/imgs/banner.png)
 
-Test
-Test2
+# Zombie Game
+Unnamed zombie game for Roblox Fall Accelerator 2020.
