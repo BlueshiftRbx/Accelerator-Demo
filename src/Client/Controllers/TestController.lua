@@ -14,7 +14,7 @@ end
 
 
 function TestController:Init()
-	local x = 5;
+	self.SomeValue = true
 end
 
 
