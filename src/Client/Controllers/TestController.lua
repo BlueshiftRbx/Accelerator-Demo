@@ -1,4 +1,4 @@
--- Test Controller
+	-- Test Controller
 -- Username
 -- June 22, 2020
 
@@ -8,6 +8,7 @@ local TestController = {}
 
 
 function TestController:Start()
+	print("yeehaw")
 	warn("Help")
 end
 
