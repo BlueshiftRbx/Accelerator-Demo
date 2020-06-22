@@ -13,7 +13,7 @@ end
 
 
 function TestController:Init()
-
+	self.SomeValue = true
 end
 
 
