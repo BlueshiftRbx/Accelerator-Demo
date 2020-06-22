@@ -8,13 +8,13 @@ local TestController = {}
 
 
 function TestController:Start()
-	print("yeehaw")
+	print("yeah")
 	warn("Help")
 end
 
 
 function TestController:Init()
-	self.SomeValue = true
+	local x = 5;
 end
 
 
