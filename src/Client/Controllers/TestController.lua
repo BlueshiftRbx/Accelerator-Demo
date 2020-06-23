@@ -5,7 +5,7 @@
 local TestController = {}
 
 function TestController:Start()
-
+	print("Test")
 end
 
 function TestController:Init()
