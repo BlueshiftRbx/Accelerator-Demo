@@ -1,11 +1,28 @@
-# Zombie Game
+![Logo](./imgs/banner.png)
+
+<div style="text-align:center;">
+  <h1>Zombie Game</h1>
+  <ul style="list-style-type:none; margin:0; padding:0;">
+    <a href="https://discord.gg/Pm5MxFk">
+	  <img src="https://img.shields.io/badge/social-discord-purple.svg" />
+	</a>
+	<a href = "https://trello.com/b/XoeRCqKE/zombie-game">
+	  <img src="https://img.shields.io/badge/progress-trello-red.svg" />
+	</a>
+    <a href="https://www.roblox.com/groups/5022534/Blueshift">
+	  <img src="https://img.shields.io/badge/info-group-skyblue.svg" />
+	</a>
+  </ul>
+</div>
+
+---
 
 An unnamed zombie game for Roblox Fall Accelerator 2020.
 
 ## Table of Contents
 
-- [Team](#Team)
-- [Resources](#Resources)
+- [Team](#team)
+- [Resources](#resources)
 
 ## Team {#Team}
 
@@ -30,9 +47,3 @@ An unnamed zombie game for Roblox Fall Accelerator 2020.
 [Rojo](https://rojo.space/docs/) - Rojo documentation.
 
 [Codestream](https://docs.codestream.com/userguide/) - A user guide going over features.
-
-[Trello](https://trello.com/b/XoeRCqKE/zombie-game) - A trello board that contains project progress and tasks.
-
----
-
-![Blueshift](/imgs/banner.png)
