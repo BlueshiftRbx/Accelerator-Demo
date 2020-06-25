@@ -1,8 +1,8 @@
 ![Logo](./imgs/banner.png)
 
-<div style="text-align:center; float:center; align:center">
+<div style="text-align:center; float:center;">
   <h1>Zombie Game</h1>
-  <ul style="list-style-type:none; margin:0; padding:0;">
+  <div style="float:center;">
     <a href="https://discord.gg/Pm5MxFk">
 	  <img src="https://img.shields.io/badge/social-discord-purple.svg" />
 	</a>
@@ -12,7 +12,7 @@
     <a href="https://www.roblox.com/groups/5022534/Blueshift">
 	  <img src="https://img.shields.io/badge/info-group-skyblue.svg" />
 	</a>
-  </ul>
+  </div>
 </div>
 
 
@@ -22,8 +22,8 @@ An unnamed zombie game for Roblox Fall Accelerator 2020.
 
 ## Table of Contents
 
-- [Team](#-team)
-- [Resources](#-resources)
+- [Team](#team)
+- [Resources](#resources)
 
 ## Team
 
