@@ -41,12 +41,12 @@
 
 ## Resources
 
-[Developer Hub](https://developer.roblox.com/api-reference) - Roblox devhub API.
+[*Developer Hub*](https://developer.roblox.com/api-reference) - Roblox devhub API.
 
-[Roblox API](https://robloxapi.github.io/ref/) - Roblox github API.
+[*Roblox API*](https://robloxapi.github.io/ref/) - Roblox github API.
 
-[AeroGameFramework](https://sleitnick.github.io/AeroGameFramework/) - AGF documentation.
+[*AeroGameFramework*](https://sleitnick.github.io/AeroGameFramework/) - AGF documentation.
 
-[Rojo](https://rojo.space/docs/) - Rojo documentation.
+[*Rojo*](https://rojo.space/docs/) - Rojo documentation.
 
-[Codestream](https://docs.codestream.com/userguide/) - A user guide going over features.
+[*Codestream*](https://docs.codestream.com/userguide/) - A user guide going over features.
