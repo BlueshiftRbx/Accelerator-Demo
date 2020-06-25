@@ -24,8 +24,8 @@
 
 ## Table of Contents
 
-- [Team](#team)
-- [Resources](#resources)
+- [*Team*](#team)
+- [*Resources*](#resources)
 
 ## Team
 
