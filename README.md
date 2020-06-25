@@ -1,6 +1,5 @@
-![Logo](./imgs/banner.png)
-
 <div align="center" style="text-align:center; float:center;">
+  <img src="./imgs/banner.png">
   <h1>Zombie Game</h1>
   <div align="center" style="float:center;">
     <a href="https://discord.gg/Pm5MxFk">
