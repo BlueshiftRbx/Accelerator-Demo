@@ -17,14 +17,14 @@
 
 ---
 
-An unnamed zombie poggame for Roblox Fall Accelerator 2020.
+An unnamed zombie game for Roblox Fall Accelerator 2020.
 
 ## Table of Contents
 
-- [Team](#team)
-- [Resources](#resources)
+- [Team](#-team)
+- [Resources](#-resources)
 
-## Team {#Team}
+## Team
 
 **Team Leader** - [*Legoracer*](https://www.roblox.com/users/101545/profile)
 
@@ -36,7 +36,7 @@ An unnamed zombie poggame for Roblox Fall Accelerator 2020.
 
 **Sound Designer** - [*a8y*](https://www.roblox.com/users/46292035/profile)
 
-## Resources {#Resources}
+## Resources
 
 [Developer Hub](https://developer.roblox.com/api-reference) - Roblox devhub API.
 
