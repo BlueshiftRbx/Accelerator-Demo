@@ -13,12 +13,14 @@
 	  <img src="https://img.shields.io/badge/info-group-skyblue.svg" />
 	</a>
   </div>
+
+  An unnamed zombie game for Roblox Fall Accelerator 2020.
 </div>
 
 
 ---
 
-An unnamed zombie game for Roblox Fall Accelerator 2020.
+
 
 ## Table of Contents
 
