@@ -17,7 +17,7 @@
 
 ---
 
-An unnamed zombie game for Roblox Fall Accelerator 2020.
+An unnamed zombie poggame for Roblox Fall Accelerator 2020.
 
 ## Table of Contents
 
