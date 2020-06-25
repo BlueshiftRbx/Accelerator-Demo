@@ -2,7 +2,7 @@
 
 <div style="text-align:center; float:center;">
   <h1>Zombie Game</h1>
-  <div style="float:center;">
+  <div align="center" style="float:center;">
     <a href="https://discord.gg/Pm5MxFk">
 	  <img src="https://img.shields.io/badge/social-discord-purple.svg" />
 	</a>
