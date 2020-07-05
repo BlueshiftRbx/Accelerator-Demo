@@ -18,5 +18,3 @@ local Aero = _G.Aero;
 
 Aero.Controllers.Fade:Out(0)
 Aero.Controllers.UI:Start()
-
---hh
