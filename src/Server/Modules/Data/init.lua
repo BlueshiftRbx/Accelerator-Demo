@@ -4,7 +4,7 @@
 
 
 --[[
-	
+
 	CONSTRUCTORS:
 		data = Data.new(name, scope [, ordered])              [Creates or gets existing Data object for given name and scope]
 		data = Data.ForPlayer(userId | player [, ordered])    [Creates or gets existing Data object for given player OR UserId]
@@ -35,7 +35,7 @@
 		Promise<Void>           data:Destroy([Boolean saveAll])
 		Number                  data:GetRequestBudget(DataStoreRequestType requestType)
 		Void                    data:MarkDirty(String key)
-		
+
 	EVENTS:
 		data.Success         data.Success:Connect(String method, String key)
 		data.Failed          data.Failed:Connect(String method, String key, String err)
@@ -103,7 +103,7 @@
 			Marks the key as dirty, which means that it will be forced to save the
 			next time a save invocation occurs. This is necessary when making changes
 			to tables.
-	
+
 
 	EXAMPLES:
 
@@ -275,7 +275,7 @@ function Data.new(name, scope, ordered)
 		_destroyed = false;
 		_destroying = false;
 	}, Data)
-	
+
 	-- Data events:
 	self.Success = self.Shared.Event.new()
 	self.Failed = self.Shared.Event.new()
@@ -696,7 +696,7 @@ function Data:Start()
 			end
 		end
 	end
-	
+
 	local function FireBoundToCloseCallbacks()
 		local numBinded = #self._onCloseHandlers
 		if (numBinded == 0) then return end
@@ -717,7 +717,7 @@ function Data:Start()
 		bindable.Event:Wait()
 		bindable:Destroy()
 	end
-	
+
 	local function AutoSaveAllData()
 		if (autoSaving) then return end
 		autoSaving = true
