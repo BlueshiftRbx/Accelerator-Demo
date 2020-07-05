@@ -1,7 +1,8 @@
 local LoadingScreen = {}
 
 function LoadingScreen:Start()
-	warn("Started")
+	print(self.Controllers)
+	self.Controllers.Fade:In(0)
 end
 
 return LoadingScreen
