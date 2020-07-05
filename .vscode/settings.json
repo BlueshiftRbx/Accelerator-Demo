@@ -8,6 +8,6 @@
 	"files.trimTrailingWhitespace": true,
 
 	"files.exclude": {
-		"src/_framework/": true
+		"src/_framework/": false
 	}
 }
