@@ -4,9 +4,10 @@ local ReplicatedFirst = game:GetService("ReplicatedFirst")
 
 local temporaryBlackscreen = Instance.new('ScreenGui')
 temporaryBlackscreen.IgnoreGuiInset = true
-local temporaryBlackscreenFrame = Instance.new("Frame", temporaryBlackscreen)
+local temporaryBlackscreenFrame = Instance.new("Frame")
 temporaryBlackscreenFrame.Size = UDim2.new(1,0,1,0)
 temporaryBlackscreenFrame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+temporaryBlackscreenFrame.Parent = temporaryBlackscreen
 temporaryBlackscreen.Parent = Player:WaitForChild("PlayerGui")
 
 ReplicatedFirst:RemoveDefaultLoadingScreen();

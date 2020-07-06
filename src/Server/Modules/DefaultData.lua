@@ -1,6 +1,6 @@
 return {
 	-- NOTE Hub & Session
-	Class = "Commando",
+	Class = "Commando";
 
 	Levels = {
 		--[[ EXAMPLE LEVEL
@@ -9,32 +9,32 @@ return {
 				XPRatio = 0 (between 0 and 1)
 			}
 		]]
-	}
+	};
 
 	-- NOTE Hub related
-	Credits = 0, -- Shop currency
-	Trophies = 0 -- maps completed.
+	Credits = 0; -- Shop currency
+	Trophies = 0; -- maps completed.
 
 	Inventory = {
-		Skins = {},
-		Perks = {},
-	},
+		Skins = {};
+		Perks = {};
+	};
 
 	-- NOTE doesn't replicate to the client.
 	__SERVER = {
-		Analytics = {},
+		Analytics = {};
 		BanData = {
 			--[[ EXAMPLE BAN
-				Reason = "Ban Example",
-				Timestamp = 0,
-				Duration = "",
+				Reason = "Ban Example";
+				Timestamp = 0;
+				Duration = "";
 			--]]
-		},
-	},
+		};
+	};
 
 	-- NOTE Session related
 	Equipped = {
-		Skins = {},
-		Perks = {},
-	},
+		Skins = {};
+		Perks = {};
+	};
 }
