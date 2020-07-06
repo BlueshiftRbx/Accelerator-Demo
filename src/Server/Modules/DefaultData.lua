@@ -1,18 +1,40 @@
 return {
-	Loadout = {};
-	Inventory = {};
-	A = {
-		B = {
-			C = 0;
-		}
-	};
-	Money = 0;
+	-- NOTE Hub & Session
+	Class = "Commando",
 
-	__SERVER = {--// __SERVER doesn't replicate to Client!
-		Analytics = {};
-		BanData = {
-			--// {Reason="Ban Example"; Timestamp=0; Duration=""};
-			--// Timestamp is tick, Duration is in seconds or 0 for infinite.
-		};
+	Levels = {
+		--[[ EXAMPLE LEVEL
+			Class = {
+				Level = 1
+				XPRatio = 0 (between 0 and 1)
+			}
+		]]
 	}
+
+	-- NOTE Hub related
+	Credits = 0, -- Shop currency
+	Trophies = 0 -- maps completed.
+
+	Inventory = {
+		Skins = {},
+		Perks = {},
+	},
+
+	-- NOTE doesn't replicate to the client.
+	__SERVER = {
+		Analytics = {},
+		BanData = {
+			--[[ EXAMPLE BAN
+				Reason = "Ban Example",
+				Timestamp = 0,
+				Duration = "",
+			--]]
+		},
+	},
+
+	-- NOTE Session related
+	Equipped = {
+		Skins = {},
+		Perks = {},
+	},
 }
