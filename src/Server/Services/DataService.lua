@@ -12,15 +12,18 @@ local TableUtil
 local Event
 
 function DataService.Client:FetchData(player)
-	local data = self.Cache[player.UserId]
+	local data = self.Server.Cache[player.UserId]
 	if data then
+		data.__SERVER = nil;
 		return data
 	end
 end
 
 --// Fired whenever data has changed up.
 function DataService:DataChanged(player, path, key, value)
-
+	if not path:match("__SERVER") then
+		self:FireClient("DataChanged", player, path, key, value)
+	end
 end
 
 --// Creates a proxy table which listens to metamethods;
@@ -35,8 +38,8 @@ function DataService:CreateProxyTable(data)
 				local v = rawget(data, k);
 				if v then
 					if typeof(v) == "table" then
-						local newPath = (path.."//%s"):format(k)
-						return proxyItUp(v, event, )
+						local newPath = (path.."/%s"):format(k)
+						return proxyItUp(v, event, newPath)
 					else
 						return v;
 					end
@@ -45,8 +48,8 @@ function DataService:CreateProxyTable(data)
 
 			__newindex = function(_, k, v)
 				rawset(data, k, v);
-				event:Fire(path, k, v)
-			end
+				event:Fire(path:sub(2), k, v)
+			end;
 
 			__call = function(_)
 				return event
@@ -76,14 +79,18 @@ function DataService:LoadData(player)
 	changedEvent:Connect(function(path, key, value)
 		self:DataChanged(player, path, key, value)
 	end)
+
+	wait(5)
+	print("doing it")
+	proxyData.A.B.C = 50
 end
 
 function DataService:PlayerAdded(player)
-	self:LoadData();
+	self:LoadData(player);
 end
 
 function DataService:PlayerRemoving(player)
-	self:SaveData();
+	self:SaveData(player);
 
 	--// Clear up their stuff
 	self.Cache[player.UserId] = nil;
@@ -100,7 +107,7 @@ function DataService:Start()
 	end)
 
 	-- In case a player has joined before the event was connected.
-	for _, player in pairs(players:GetPlayers())) do
+	for _, player in pairs(players:GetPlayers()) do
 		self:PlayerAdded(player)
 	end
 
@@ -114,6 +121,10 @@ end
 function DataService:Init()
 	DefaultData = self.Modules.DefaultData
 	TableUtil = self.Shared.TableUtil
+	Event = self.Shared.Event
+
+	self:RegisterClientEvent("DataReady")
+	self:RegisterClientEvent("DataChanged")
 end
 
 return DataService

@@ -17,4 +17,5 @@ repeat wait() until _G.Aero
 local Aero = _G.Aero;
 
 Aero.Controllers.Fade:Out(0)
+temporaryBlackscreen:Destroy()
 Aero.Controllers.UI:Start()
