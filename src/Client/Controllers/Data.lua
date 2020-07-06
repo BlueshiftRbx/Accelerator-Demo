@@ -13,7 +13,7 @@ function Data:OnUpdate(path, key, value)
 	--// Go through Cache until you find end of path
 	for branch in path:gmatch("[^//]+") do
 		if currentRepo ~= nil then
-			local newRepo = currentRepo[newRepo]
+			local newRepo = currentRepo[branch]
 			if newRepo then
 				currentRepo = newRepo
 			else
