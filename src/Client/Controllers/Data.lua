@@ -4,6 +4,7 @@ local Data = {
 }
 local DataService;
 
+--// Callback whenever server updates a key
 function Data:OnUpdate(path, key, value)
 	if self.DataReady == false then return end
 
@@ -31,6 +32,7 @@ function Data:OnUpdate(path, key, value)
 	end
 end
 
+--// Recaches whole Cache instantaneously
 function Data:Recache()
 	local newData = DataService:FetchData();
 	if newData then
@@ -42,13 +44,16 @@ function Data:Recache()
 end
 
 function Data:Start()
-	local success = false;
+
 
 	DataService.DataChanged:Connect(function(path, key, value)
 		self:OnUpdate(path, key, value)
 	end)
 
-	repeat success=Data:Recache(); wait(2) until success;
+	--// Keep requesting data until you get it
+	local success do
+		repeat success=Data:Recache(); wait(2) until success;
+	end
 
 	self.DataReady = true
 	self:FireEvent("DataReady")
