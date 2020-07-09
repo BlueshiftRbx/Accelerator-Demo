@@ -20,6 +20,10 @@ return {
 		Perks = {};
 	};
 
+	__SESSIONDATA = {
+
+	};
+
 	-- NOTE doesn't replicate to the client.
 	__SERVER = {
 		Analytics = {};

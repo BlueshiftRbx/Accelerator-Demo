@@ -66,6 +66,11 @@ function DataService:CreateProxyTable(data)
 end
 
 function DataService:SaveData(player)
+	local plrData = self.Cache[player.UserId]
+	if plrData then
+		local plrDataCopy = TableUtil.Copy(plrData)
+		plrDataCopy.__SESSIONDATA = nil;
+	end
 	--// topkek
 end
 
@@ -79,10 +84,7 @@ function DataService:LoadData(player)
 	changedEvent:Connect(function(path, key, value)
 		self:DataChanged(player, path, key, value)
 	end)
-
-	wait(5)
-	print("doing it")
-	proxyData.A.B.C = 50
+	self:FireClient("DataReady", player)
 end
 
 function DataService:PlayerAdded(player)
