@@ -1,14 +1,14 @@
-local Data = {
+local DataController = {
 	Cached = {};
 	DataReady = false;
 }
 local DataService;
 
 --// Callback whenever server updates a key
-function Data:OnUpdate(path, key, value)
+function DataController:OnUpdate(path, key, value)
 	if self.DataReady == false then return end
 
-	local currentRepo = Data.Cached
+	local currentRepo = DataController.Cached
 
 	--// Go through Cache until you find end of path
 	for branch in path:gmatch("[^//]+") do
@@ -33,17 +33,17 @@ function Data:OnUpdate(path, key, value)
 end
 
 --// Recaches whole Cache instantaneously
-function Data:Recache()
+function DataController:Recache()
 	local newData = DataService:FetchData();
 	if newData then
-		Data.Cached = newData
+		DataController.Cached = newData
 
 		return true
 	end
 	return false
 end
 
-function Data:Start()
+function DataController:Start()
 
 
 	DataService.DataChanged:Connect(function(path, key, value)
@@ -52,18 +52,18 @@ function Data:Start()
 
 	--// Keep requesting data until you get it
 	local success do
-		repeat success=Data:Recache(); wait(2) until success;
+		repeat success=DataController:Recache(); wait(2) until success;
 	end
 
 	self.DataReady = true
 	self:FireEvent("DataReady")
 end
 
-function Data:Init()
+function DataController:Init()
 	DataService = self.Services.DataService
 
 	self:RegisterEvent("DataReady")
 	self:RegisterEvent("DataChanged")
 end
 
-return Data
+return DataController

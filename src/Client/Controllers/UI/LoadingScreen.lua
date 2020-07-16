@@ -1,5 +1,5 @@
 local LoadingScreen = {}
-local Data;
+local DataController;
 local UserInput;
 
 local Maid;
@@ -27,7 +27,7 @@ function LoadingScreen:Start()
 	wait(0.5)
 	self:SetTitleText("Waiting for data..")
 
-	repeat wait(0.2) until Data.DataReady;
+	repeat wait(0.2) until DataController.DataReady;
 	self:SetTitleText("Data ready!")
 
 	wait(1)
@@ -50,7 +50,7 @@ function LoadingScreen:Start()
 end
 
 function LoadingScreen:Init()
-	Data = self.Controllers.Data
+	DataController = self.Controllers.Data
 	UserInput = self.Controllers.UserInput
 	Maid = self.Shared.Maid
 
