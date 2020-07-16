@@ -15,24 +15,20 @@ local PRIMARY_TAG = "Primary"
 local SECONDARY_TAG = "Secondary"
 
 local WeaponController = {
+	_Current = nil;
+
 	_Weapons = {
 		Primary = nil;
 		Secondary = nil;
 	};
 }
 
-function OnChildAdded(obj)
-	if obj:IsA("Tool") and CollectionService:HasTag(obj, WEAPON_TAG) then
-		if CollectionService:HasTag(obj, PRIMARY_TAG) then
-			WeaponController:CreateWeapon(tool)
-		elseif CollectionService:HasTag(obj, SECONDARY_TAG) then
-			WeaponController:CreateWeapon(tool)
-		end
-	end
-end
-
 function WeaponController:Start()
-	self.Backpack.ChildAdded:Connect(OnChildAdded)
+	self.Backpack.ChildAdded:Connect(function(obj)
+		if obj:IsA("Tool") and CollectionService:HasTag(obj, WEAPON_TAG) then
+			WeaponController:CreateWeapon(obj)
+		end
+	end)
 end
 
 function WeaponController:Init()
@@ -57,6 +53,10 @@ function WeaponController:CreateWeapon(tool)
 
 		if CollectionService:HasTag(tool, PRIMARY_TAG) then
 			self._Weapons.Primary = weapon
+
+			if not self._Current then
+				self:Equip("Primary")
+			end
 		elseif CollectionService:HasTag(tool, SECONDARY_TAG) then
 			self._Weapons.Secondary = weapon
 		end
