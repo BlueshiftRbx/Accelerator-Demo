@@ -4,8 +4,9 @@ Projectile.__index = Projectile
 local RunService = game:GetService("RunService")
 local Assets = game:GetService("ReplicatedStorage"):WaitForChild("Assets")
 
-local VELOCITY = 100;
+local VELOCITY = 60;
 local GRAVITY = 9.81
+local MASS = 0.01
 
 
 function Projectile.new(owner, origin, goal)
@@ -15,30 +16,39 @@ function Projectile.new(owner, origin, goal)
 
 	local self = setmetatable({}, Projectile)
 
-	if (RunService:IsClient()) then -- If client then create visual representation of the bullet.
-		print('is client')
-		self.Bullet = Assets.Effects.BulletA:Clone();
-		self.Bullet.Parent = workspace.Bullets
-	end
-
 	self.Origin = origin;
 	self.Goal = goal;
 	self.Position = self.Origin;
 	self.LastPosition = self.Origin;
 
 	self.Velocity = VELOCITY;
-	self.Mass = MASS;
-	self.Gravity = GRAVITY;
 
 	self.LookVector = CFrame.new(origin, goal).LookVector
+
+	if (RunService:IsClient()) then -- If client then create visual representation of the bullet.
+		self.Bullet = Assets.Effects.Bullet:Clone();
+		self.Bullet.CFrame = CFrame.new(self.Origin)
+		self.Bullet.Parent = workspace.Bullets
+	end
 
 	return self
 end
 
 function Projectile:Step(dt)
-	local newPoint = self.Position + self.LookVector * (self.Velocity * dt) - Vector3.new(0, GRAVITY * dt, 0);
-	self.Position = newPoint
-	self.Bullet.CFrame = CFrame.new(self.Position)
+	local newPosition = self.Position + self.LookVector * (self.Velocity * dt) - Vector3.new(0, GRAVITY * dt * MASS, 0);
+
+	local didHit, raycastData = self:_Raycast(self.Position, newPosition)
+	if didHit then
+		return true
+	else
+		self.LookVector = CFrame.new(self.Position, newPosition).LookVector
+		self.LastPosition = self.Position
+		self.Position = newPosition
+
+		local magnitude = (self.LastPosition - self.Position).Magnitude
+		self.Bullet.Size = Vector3.new(0.2, 0.2, magnitude)
+		self.Bullet.CFrame = CFrame.new(self.LastPosition+self.LookVector*(magnitude/2), self.Position)
+	end
 end
 
 function Projectile:_Raycast(a, b)
