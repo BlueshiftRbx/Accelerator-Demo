@@ -12,8 +12,13 @@ end
 
 function ProjectileController:Start()
 	RunService.Stepped:Connect(function(dt)
-		for _, projectile in pairs(self.Projectiles) do
-			projectile:Step(dt)
+		for i=#self.Projectiles, 1 do
+			local projectile = self.Projectiles[i]
+			local completed = projectile:Step(dt)
+			if completed then
+				projectile:Destroy()
+				table.remove(self.Projectiles, i)
+			end
 		end
 	end)
 end

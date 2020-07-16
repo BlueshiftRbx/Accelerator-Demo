@@ -44,8 +44,12 @@ function Projectile:Step(dt)
 		local magnitude = (self.Position - self.LastPosition).Magnitude
 		self.Bullet.Size = Vector3.new(0.2, 0.2, magnitude) --> Set bullet size to path crossed in step so it gives impression of speed
 		self.Bullet.CFrame = CFrame.new(self.LastPosition + (self.LookVector * magnitude/2), self.Position)
+
+		return false
 	else
 		warn("reached something i guess")
+
+		return true
 	end
 end
 
@@ -57,6 +61,10 @@ function Projectile:_Raycast(origin, goal)
 	return (not (not hit), {
 		Hit = hit; Position = position; Normal = normal
 	})
+end
+
+function Projectile:Destroy()
+	if self.Bullet then self.Bullet:Destroy() end
 end
 
 return Projectile;
