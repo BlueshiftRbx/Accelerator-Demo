@@ -52,8 +52,8 @@ function Projectile:Step(dt)
 		local magnitude = (self.LastPosition - self.Position).Magnitude
 		self.Bullet.Size = Vector3.new(0.2, 0.2, magnitude)
 		self.Bullet.CFrame = CFrame.new(self.LastPosition+self.LookVector*(magnitude/2), self.Position)
-		self.Bullet["1"].Position = Vector3.new(0,0,-magnitude/2)
-		self.Bullet["2"].Position = Vector3.new(0,0, magnitude/2)
+		self.Bullet["1"].Position = Vector3.new(0,0,-magnitude/2) --> Set trail size to be equal to distance passed in
+		self.Bullet["2"].Position = Vector3.new(0,0, magnitude/2) --^ 	the last step, gives effect of speed
 
 		return false
 	end
