@@ -1,4 +1,10 @@
 local Cursor = {};
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local UserInput, Mouse;
+
+local WIDTH = 4
 
 function Cursor:SetEnabled(enabled)
 	self.Right.Visible = enabled
@@ -15,13 +21,29 @@ function Cursor:SetGap(gap)
 end
 
 function Cursor:SetLength(length)
-	self.Right.Size = UDim2.new(0, length, 0, 2)
-	self.Left.Size = UDim2.new(0, length, 0, 2)
-	self.Top.Size = UDim2.new(0, 2, 0, length)
-	self.Bottom.Size = UDim2.new(0, 2, 0, length)
+	self.Center.Size = UDim2.new(0, WIDTH, 0, WIDTH)
+	self.Right.Size = UDim2.new(0, length, 0, WIDTH)
+	self.Left.Size = UDim2.new(0, length, 0, WIDTH)
+	self.Top.Size = UDim2.new(0, WIDTH, 0, length)
+	self.Bottom.Size = UDim2.new(0, WIDTH, 0, length)
+end
+
+function Cursor:Start()
+	Mouse = UserInput:Get("Mouse")
+
+	UserInputService.MouseIconEnabled = false;
+	self:SetEnabled(false)
+	self:SetLength(10)
+
+	RunService.RenderStepped:Connect(function()
+		local pos = Mouse:GetPosition()
+		self.Center.Position = UDim2.new(0, pos.X, 0, pos.Y)
+	end)
 end
 
 function Cursor:Init()
+	UserInput = self.Controllers.UserInput
+
 	self.CursorUI = self.UI:WaitForChild("GameMenu"):WaitForChild("Cursor")
 
 	self.Center = self.CursorUI.Center;

@@ -13,6 +13,10 @@ function ProjectileController:CreateProjectile(owner, origin, goal)
 end
 
 function ProjectileController:Start()
+	BulletService.OnBulletReplicate:Connect(function(owner, origin, goal)
+		print(owner, origin, goal)
+		self:CreateProjectile(owner, origin, goal)
+	end)
 
 	RunService.Stepped:Connect(function(_, dt)
 		for i=#self.Projectiles, 1, -1 do

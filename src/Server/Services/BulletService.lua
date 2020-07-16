@@ -5,7 +5,9 @@ local Players = game:GetService("Players")
 
 function BulletService.Client:Replicate(owner, origin, destination)
 	for _, player in pairs(Players:GetPlayers()) do
-		self.Server:FireClient("OnBulletReplicate", player, owner, origin, destination)
+		if player ~= owner then
+			self.Server:FireClient("OnBulletReplicate", player, owner, origin, destination)
+		end
 	end
 end
 

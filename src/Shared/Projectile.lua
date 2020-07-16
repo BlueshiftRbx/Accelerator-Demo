@@ -32,7 +32,7 @@ function Projectile.new(owner, origin, goal)
 	end
 
 	if (game:GetService("Players").LocalPlayer == owner) then
-		self.Services.BulletService:Replicate(origin, destination)
+		self.Services.BulletService:Replicate(origin, goal)
 	end
 
 	return self
