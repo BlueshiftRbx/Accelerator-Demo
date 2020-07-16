@@ -4,9 +4,9 @@ Projectile.__index = Projectile
 local RunService = game:GetService("RunService")
 local Assets = game:GetService("ReplicatedStorage"):WaitForChild("Assets")
 
-local VELOCITY = 60;
+local VELOCITY = 500;
 local GRAVITY = 9.81
-local MASS = 0.01
+local MASS = 0.025
 
 
 function Projectile.new(owner, origin, goal)
@@ -31,6 +31,10 @@ function Projectile.new(owner, origin, goal)
 		self.Bullet.Parent = workspace.Bullets
 	end
 
+	if (game:GetService("Players").LocalPlayer == owner) then
+		self.Services.BulletService:Replicate(origin, destination)
+	end
+
 	return self
 end
 
@@ -48,6 +52,10 @@ function Projectile:Step(dt)
 		local magnitude = (self.LastPosition - self.Position).Magnitude
 		self.Bullet.Size = Vector3.new(0.2, 0.2, magnitude)
 		self.Bullet.CFrame = CFrame.new(self.LastPosition+self.LookVector*(magnitude/2), self.Position)
+		self.Bullet["1"].Position = Vector3.new(0,0,-magnitude/2)
+		self.Bullet["2"].Position = Vector3.new(0,0, magnitude/2)
+
+		return false
 	end
 end
 

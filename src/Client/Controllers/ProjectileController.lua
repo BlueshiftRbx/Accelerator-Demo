@@ -2,19 +2,22 @@ local ProjectileController = {
 	Projectiles = {};
 };
 local RunService = game:GetService("RunService")
+
+local BulletService;
 local Projectile;
 
-function ProjectileController:CreateProjectile(player, origin, goal)
-	local newProjectile = Projectile.new(player, origin, goal)
+function ProjectileController:CreateProjectile(owner, origin, goal)
+	local newProjectile = Projectile.new(owner, origin, goal)
 
 	table.insert(self.Projectiles, newProjectile)
 end
 
 function ProjectileController:Start()
-	RunService.Stepped:Connect(function(dt)
+
+	RunService.Stepped:Connect(function(_, dt)
 		for i=#self.Projectiles, 1, -1 do
 			local projectile = self.Projectiles[i]
-			local completed = projectile:Step(0.1)
+			local completed = projectile:Step(dt)
 			if completed then
 				projectile:Destroy()
 				table.remove(self.Projectiles, i)
@@ -24,6 +27,7 @@ function ProjectileController:Start()
 end
 
 function ProjectileController:Init()
+	BulletService = self.Services.BulletService
 	Projectile = self.Shared.Projectile
 end
 

@@ -6,7 +6,7 @@ local DataController
 
 -- Modules
 local Weapon
-local Projectile
+local ProjectileController
 local WeaponInfo
 
 -- Variables
@@ -22,28 +22,6 @@ local WeaponController = {
 		Secondary = nil;
 	};
 }
-
-function WeaponController:Start()
-	self.Backpack.ChildAdded:Connect(function(obj)
-		if obj:IsA("Tool") and CollectionService:HasTag(obj, WEAPON_TAG) then
-			WeaponController:CreateWeapon(obj)
-		end
-	end)
-end
-
-function WeaponController:Init()
-	DataController = self.Controllers.DataController
-
-	Weapon = self.Modules.Weapon
-
-	Projectile = self.Shared.Projectile
-	WeaponInfo = self.Shared.WeaponInfo
-
-	self.Backpack = self.Player:WaitForChild("Backpack")
-
-	self:RegisterEvent("ToolEquipped")
-	self:RegisterEvent("ToolUnequipped")
-end
 
 function WeaponController:CreateWeapon(tool)
 	local info = WeaponInfo[tool.Name]
@@ -62,3 +40,27 @@ function WeaponController:CreateWeapon(tool)
 		end
 	end
 end
+
+function WeaponController:Start()
+	self.Backpack.ChildAdded:Connect(function(obj)
+		if obj:IsA("Tool") and CollectionService:HasTag(obj, WEAPON_TAG) then
+			WeaponController:CreateWeapon(obj)
+		end
+	end)
+end
+
+function WeaponController:Init()
+	DataController = self.Controllers.DataController
+
+	Weapon = self.Modules.Weapon
+
+	ProjectileController = self.Controllers.ProjectileController
+	WeaponInfo = self.Shared.WeaponInfo
+
+	self.Backpack = self.Player:WaitForChild("Backpack")
+
+	self:RegisterEvent("ToolEquipped")
+	self:RegisterEvent("ToolUnequipped")
+end
+
+return WeaponController
