@@ -20,6 +20,11 @@ function LoadingScreen:End()
 end
 
 function LoadingScreen:Start()
+	if game:GetService("RunService"):IsStudio() then
+		self:End();
+		return
+	end
+
 	self:SetVisible(true)
 	wait(1)
 	self.Controllers.Fade:In(2)
