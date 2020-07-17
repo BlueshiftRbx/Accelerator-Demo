@@ -22,6 +22,7 @@ function Weapon:GetTool()
 end
 
 function Weapon:Destroy()
+
 end
 
 function Weapon:Init()
