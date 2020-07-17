@@ -195,36 +195,36 @@ end
 
 -- Load service from module:
 local function LoadService(module, servicesTbl, parentFolder)
-	
+
 	local remoteFolder = Instance.new("Folder")
 	remoteFolder.Name = module.Name
 	remoteFolder.Parent = parentFolder
-	
+
 	local service = require(module)
 	servicesTbl[module.Name] = service
-	
+
 	if (type(service.Client) ~= "table") then
 		service.Client = {}
 	end
 	service.Client.Server = service
-	
+
 	setmetatable(service, mt)
-	
+
 	service._events = {}
 	service._clientEvents = {}
 	service._clientCaches = {}
 	service._remoteFolder = remoteFolder
-	
+
 end
 
 
 local function InitService(service)
-	
+
 	-- Initialize:
-	if (type(service.Init) == "function") then
+	if (type(service.Init) == "function" and not service.__aeroPreventInit) then
 		service:Init()
 	end
-	
+
 	-- Client functions:
 	for funcName,func in pairs(service.Client) do
 		if (type(func) == "function") then
@@ -237,14 +237,14 @@ local function InitService(service)
 	service.RegisterClientEvent = PreventEventRegister
 	service.RegisterClientFunction = PreventFunctionRegister
 	service.CacheClientMethod = PreventMethodCache
-	
+
 end
 
 
 local function StartService(service)
 
 	-- Start services on separate threads:
-	if (type(service.Start) == "function") then
+	if (type(service.Start) == "function" and not service.__aeroPreventStart) then
 		SpawnNow(service.Start, service)
 	end
 
@@ -266,7 +266,7 @@ local function Init()
 			end
 		end
 	end
-	
+
 	-- Load service modules:
 	local function LoadAllServices(parent, servicesTbl, parentFolder)
 		for _,child in ipairs(parent:GetChildren()) do
@@ -282,7 +282,7 @@ local function Init()
 			end
 		end
 	end
-	
+
 	-- Initialize services:
 	local function InitAllServices(services)
 		-- Collect all services:
@@ -323,7 +323,7 @@ local function Init()
 			end
 		end
 	end
-	
+
 	-- Start services:
 	local function StartAllServices(services)
 		for _,service in pairs(services) do
@@ -348,7 +348,7 @@ local function Init()
 	players = game:GetService("Players"):GetPlayers()
 	game:GetService("Players").PlayerAdded:Connect(PlayerAdded)
 	game:GetService("Players").PlayerRemoving:Connect(PlayerRemoving)
-	
+
 	-- Lazy-load server and shared modules:
 	LazyLoadSetup(AeroServer.Modules, modulesFolder)
 	LazyLoadSetup(AeroServer.Shared, sharedFolder)
@@ -359,12 +359,12 @@ local function Init()
 	ScanRemoteFoldersForEmpty(remoteServices)
 	StartAllServices(AeroServer.Services)
 	StartLoadedModules()
-	
+
 	-- Expose server framework to client and global scope:
 	remoteServices.Parent = game:GetService("ReplicatedStorage").Aero
 	_G.AeroServer = AeroServer
 	_G.Aero = AeroServer
-	
+
 end
 
 

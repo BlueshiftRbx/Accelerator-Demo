@@ -175,7 +175,7 @@ end
 
 
 local function InitController(controller)
-	if (type(controller.Init) == "function") then
+	if (type(controller.Init) == "function" and not controller.__aeroPreventInit) then
 		controller:Init()
 	end
 	controller.RegisterEvent = PreventEventRegister
@@ -184,14 +184,14 @@ end
 
 local function StartController(controller)
 	-- Start controllers on separate threads:
-	if (type(controller.Start) == "function") then
+	if (type(controller.Start) == "function" and not controller.__aeroPreventStart) then
 		SpawnNow(controller.Start, controller)
 	end
 end
 
 
 local function Init()
-	
+
 	-- Load controllers:
 	local function LoadAllControllers(parent, controllersTbl)
 		for _,child in ipairs(parent:GetChildren()) do
@@ -204,7 +204,7 @@ local function Init()
 			end
 		end
 	end
-	
+
 	-- Initialize controllers:
 	local function InitAllControllers(controllers)
 		-- Collect all controllers:
@@ -230,7 +230,7 @@ local function Init()
 			InitController(controller)
 		end
 	end
-	
+
 	-- Start controllers:
 	local function StartAllControllers(controllers)
 		for _,controller in pairs(controllers) do
@@ -251,11 +251,11 @@ local function Init()
 	end
 
 	------------------------------------------------------
-	
+
 	-- Lazy load modules:
 	LazyLoadSetup(Aero.Modules, modulesFolder)
 	LazyLoadSetup(Aero.Shared, sharedFolder)
-	
+
 	-- Load server-side services:
 	LoadServices()
 
@@ -267,7 +267,7 @@ local function Init()
 
 	-- Expose client framework globally:
 	_G.Aero = Aero
-	
+
 end
 
 
