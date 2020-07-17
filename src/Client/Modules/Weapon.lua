@@ -17,6 +17,15 @@ function Weapon.new(tool, weaponInfo)
 	return self
 end
 
+function Weapon:GetTool()
+	return self.Tool
+end
+
+function Weapon:Destroy()
+end
+
 function Weapon:Init()
 	Maid = self.Shared.Maid
 end
+
+return Weapon
