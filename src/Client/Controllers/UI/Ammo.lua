@@ -4,8 +4,8 @@ function Ammo:SetAmmo(ammo)
 	self.AmmoUI.Text = ("%d / ∞"):format(ammo)
 end
 
-function Ammo:SetVisible(visible)
-	self.AmmoUI.Visible = visible;
+function Ammo:SetEnabled(enabled)
+	self.AmmoUI.Visible = enabled;
 end
 
 function Ammo:Init()
