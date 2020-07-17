@@ -2,18 +2,10 @@
 local CollectionService = game:GetService("CollectionService")
 local Workspace = game:GetService("Workspace")
 
--- Controllers
-local DataController
-
 -- Modules
 local Weapon
-local ProjectileController
 local WeaponInfo
-
--- Variables
-local WEAPON_TAG = "Weapon"
-local PRIMARY_TAG = "Primary"
-local SECONDARY_TAG = "Secondary"
+local Maid
 
 local WeaponController = {
 	_Current = nil;
@@ -25,25 +17,35 @@ local WeaponController = {
 }
 
 function WeaponController:Start()
+	Maid = Maid.new()
+
 	self.Backpack.ChildAdded:Connect(function(obj)
-		if obj:IsA("Tool") and CollectionService:HasTag(obj, WEAPON_TAG) then
-			WeaponController:CreateWeapon(obj)
+		if obj:IsA("Tool") and CollectionService:HasTag(obj, "Weapon") then
+			WeaponController:RegisterWeapon(obj)
 		end
 	end)
 
 	self.Player.CharacterAdded:Connect(function(character)
 		self.Humanoid = character:WaitForChild("Humanoid")
+
+		self.Humanoid.Died:Connect(function()
+			self._Current = nil
+			self._Weapons.Primary = nil
+			self._Weapons.Secondary = nil
+
+			Maid:DoCleaning()
+		end)
+
 		self:EquipLast()
 	end)
 end
 
 function WeaponController:Init()
-	DataController = self.Controllers.DataController
-
 	Weapon = self.Modules.Weapon
 
-	ProjectileController = self.Controllers.ProjectileController
 	WeaponInfo = self.Shared.WeaponInfo
+
+	Maid = self.Shared.Maid
 
 	self.Backpack = self.Player:WaitForChild("Backpack")
 
@@ -55,55 +57,69 @@ function WeaponController:Init()
 	self:RegisterEvent("ToolUnequipped")
 end
 
-function WeaponController:CreateWeapon(tool)
-	local info = WeaponInfo[tool.Name]
+function WeaponController:RegisterWeapon(tool)
+	if CollectionService:HasTag(tool, "Primary") then
+		local info = WeaponInfo[tool.Name]
 
-	if info then
-		local weapon = Weapon.new(tool, info)
+		if info then
+			local weapon = Weapon.new(tool, info)
 
-		if CollectionService:HasTag(tool, PRIMARY_TAG) then
-			if not self._Weapons.Primary then
-				self._Weapons.Primary = weapon
+			self._Weapons.Primary = weapon
 
-				if not self._Current then
-					self:Equip("Primary")
-				end
+			Maid:GiveTask(weapon)
+
+			if not self._Current then
+				self:Equip("Primary")
 			end
-		elseif CollectionService:HasTag(tool, SECONDARY_TAG) then
-			if not self._Weapons.Secondary then
-				self._Weapons.Secondary = weapon
+		end
+	elseif CollectionService:HasTag(tool, "Secondary") then
+		local info = WeaponInfo[tool.Name]
+
+		if info then
+			local weapon = Weapon.new(tool, info)
+
+			self._Weapons.Secondary = weapon
+
+			Maid:GiveTask(weapon)
+
+			if not self._Current then
+				self:Equip("Secondary")
 			end
 		end
 	end
 end
 
-function WeaponController:Equip(slotName)
-	if self._Current then
-		self:UnequipCurrent()
-	end
+function WeaponController:Equip(slot)
+	if slot and slot ~= self._Current then
+		local weapon = self._Weapons[slot]
 
-	local weapon = self._Weapons[slotName]
+		if weapon then
+			if self._Current then
+				self:Unequip()
+			end
 
-	if weapon then
-		local tool = weapon:GetTool()
+			local tool = weapon:GetTool()
 
-		if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
-			self.Humanoid:EquipTool(tool)
+			if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
+				self.Humanoid:Equip(tool)
 
-			self:FireEvent("ToolEquipped")
+				weapon:OnEquipped()
+
+				self:FireEvent("ToolEquipped")
+			end
 		end
 	end
 end
 
-function WeaponController:UnequipCurrent()
+function WeaponController:Unequip()
 	if self._Current then
 		local weapon = self._Weapons[self._Current]
 
 		if weapon then
-			local tool = weapon:GetTool()
-
 			if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
 				self.Humanoid:UnequipTools()
+
+				weapon:OnUnequipped()
 
 				self:FireEvent("ToolUnequipped")
 			end
