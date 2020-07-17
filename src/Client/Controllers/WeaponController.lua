@@ -102,8 +102,6 @@ function WeaponController:Equip(slot)
 			if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
 				self.Humanoid:Equip(tool)
 
-				weapon:OnEquipped()
-
 				self:FireEvent("ToolEquipped")
 			end
 		end
@@ -117,8 +115,6 @@ function WeaponController:Unequip()
 		if weapon then
 			if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
 				self.Humanoid:UnequipTools()
-
-				weapon:OnUnequipped()
 
 				self:FireEvent("ToolUnequipped")
 			end
