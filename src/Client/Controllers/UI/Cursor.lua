@@ -13,8 +13,6 @@ local Mouse
 
 local Cursor = {};
 
-local WIDTH = 4
-
 function Cursor:SetEnabled(enabled)
 	self.Right.Visible = enabled
 	self.Left.Visible = enabled
