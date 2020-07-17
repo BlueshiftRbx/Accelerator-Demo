@@ -1,5 +1,8 @@
 -- Services
 local RunService = game:GetService("RunService")
+local ContentProvider = game:GetService("ContentProvider")
+local SoundService = game:GetService("SoundService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Controllers
 local DataController
@@ -7,6 +10,9 @@ local DataController
 -- Modules
 local UserInput
 local Maid
+
+local SKIP_INTRO = false;
+
 
 local LoadingScreen = {}
 
@@ -26,13 +32,23 @@ function LoadingScreen:End()
 end
 
 function LoadingScreen:Start()
-	if RunService:IsStudio() then
+	if SKIP_INTRO and RunService:IsStudio() then
 		self:End();
 		return
 	end
 
+	--// Preload sound and icon;
+	local introSound = ReplicatedStorage.Assets.Sounds.Intro
+	ContentProvider:PreloadAsync({
+		introSound, self.LoadingMenu.Background, self.LoadingMenu.Logo
+	})
+
+	--// Show intro
 	self:SetVisible(true)
-	wait(1)
+	wait(0.5);
+
+	SoundService:PlayLocalSound(introSound)
+	wait(0.05)
 	self.Controllers.Fade:In(2)
 
 	wait(0.5)
