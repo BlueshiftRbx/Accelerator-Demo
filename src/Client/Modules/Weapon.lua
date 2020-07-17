@@ -32,6 +32,10 @@ function Weapon.new(tool, weaponInfo)
 	self.Maid = Maid.new()
 
 	-- Setup
+	tool.Activated:Connect(function()
+		self:Fire()
+	end)
+
 	tool.Equipped:Connect(function()
 		Cursor:SetEnabled(true)
 	end)
