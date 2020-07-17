@@ -6,7 +6,7 @@ local Stats = {};
 local StatsService
 local Topbar
 
-local STATS_STRING = "%dFPS   PING:%dms   PHYSX:%dms   LUA_MEM:%dMB   MEM:%dMB   %s"
+local STATS_STRING = "%dFPS   PING:%dms   PHYSX:%dms   MEM:%dMB   LUA_MEM:%dMB   %s"
 
 function Stats:FormatTime(seconds)
 	local function format(int)
@@ -32,7 +32,7 @@ function Stats:Start()
 		local physx = RobloxStats.PhysicsStepTimeMs
 		local scriptMem = RobloxStats:GetMemoryUsageMbForTag(Enum.DeveloperMemoryTag.Script)
 		local totalMem = RobloxStats:GetTotalMemoryUsageMb()
-		Topbar:SetText(STATS_STRING:format(fps, self:GetPing(), physx, scriptMem, totalMem, self:FormatTime(ServerStats.Age.Value)))
+		Topbar:SetText(STATS_STRING:format(fps, self:GetPing(), physx, totalMem, scriptMem, self:FormatTime(ServerStats.Age.Value)))
 	end
 end
 
