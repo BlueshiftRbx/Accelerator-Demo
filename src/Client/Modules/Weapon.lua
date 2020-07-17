@@ -2,6 +2,7 @@
 local Cursor
 local ProjectileController
 local UserInput
+local AmmoUI
 
 -- Modules
 local Maid
@@ -45,10 +46,12 @@ function Weapon.new(tool, weaponInfo)
 
 	tool.Equipped:Connect(function()
 		Cursor:SetEnabled(true)
+		AmmoUI:SetEnabled(true)
 	end)
 
 	tool.Unequipped:Connect(function()
 		Cursor:SetEnabled(false)
+		AmmoUI:SetEnabled(false)
 	end)
 
 	return self
@@ -60,6 +63,7 @@ function Weapon:Fire()
 			self.Busy = true
 
 			self.Ammo -= 1
+			AmmoUI:SetAmmo(self.Ammo)
 
 			ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
 
@@ -75,6 +79,7 @@ function Weapon:Reload()
 		self.IsReloading = true
 
 		self.Ammo = self.ClipSize
+		AmmoUI:SetAmmo(self.Ammo)
 
 		self.IsReloading = false
 	end
@@ -100,6 +105,7 @@ function Weapon:Init()
 	Maid = self.Shared.Maid
 	Player = self.Player
 	Mouse = self.Player:GetMouse()
+	AmmoUI = self.Controllers.UI.UIControllers.Ammo
 end
 
 return Weapon
