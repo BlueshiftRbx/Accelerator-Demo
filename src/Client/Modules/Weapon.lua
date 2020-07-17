@@ -20,8 +20,8 @@ function Weapon.new(tool, weaponInfo)
 
 	-- Object properties
 	self.Tool = tool
-	self.Handle = tool._Handle
-	self.Barrel = self.Handle.BarrelAttachment
+	self.Handle = tool:WaitForChild("_Handle")
+	self.Barrel = self.Handle:WaitForChild("BarrelAttachment")
 
 	-- Data properties
 	self.ClipSize = weaponInfo.ClipSize
