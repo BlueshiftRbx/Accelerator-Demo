@@ -5,6 +5,8 @@ local CharacterService = {}
 
 function CharacterService:CharacterAdded(player, character)
 	if character then
+		repeat wait() until character.Parent == workspace;
+		wait(0.1)
 		character.Parent = workspace.Characters
 	end
 end
