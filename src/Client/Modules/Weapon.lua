@@ -26,6 +26,7 @@ function Weapon.new(tool, weaponInfo)
 	self.ClipSize = weaponInfo.ClipSize
 	self.Ammo = weaponInfo.ClipSize
 	self.FireRate = weaponInfo.FireRate
+	self.FireMode = weaponInfo.FireMode
 
 	-- State properties
 	self.Busy = false
@@ -35,38 +36,46 @@ function Weapon.new(tool, weaponInfo)
 	self.Maid = Maid.new()
 
 	-- Setup
-	tool.Activated:Connect(function()
-		self:Fire()
-	end)
+	self.Maid:GiveTask(tool.Activated:Connect(function()
+		if self.FireMode == "Automatic" then
+			local mouse = UserInput:Get("Mouse")
 
-	tool.Deactivated:Connect(function()
+			while mouse:IsButtonPressed(Enum.UserInputType.MouseButton1) do
+				if self.Ammo <= 0 then
+					break
+				end
 
-	end)
+				self:Fire()
 
-	tool.Equipped:Connect(function()
+				wait()
+			end
+		elseif self.FireMode == "Semiautomatic" then
+			self:Fire()
+		end
+	end))
+
+	self.Maid:GiveTask(tool.Equipped:Connect(function()
 		Cursor:SetEnabled(true)
-	end)
+	end))
 
-	tool.Unequipped:Connect(function()
+	self.Maid:GiveTask(tool.Unequipped:Connect(function()
 		Cursor:SetEnabled(false)
-	end)
+	end))
 
 	return self
 end
 
 function Weapon:Fire()
-	if not self.IsReloading and self.Ammo > 0 then
-		if not self.Busy then
-			self.Busy = true
+	if not self.Busy and not self.IsReloading and self.Ammo > 0 then
+		self.Busy = true
 
-			self.Ammo -= 1
+		self.Ammo -= 1
 
-			ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
+		ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
 
-			wait()
+		wait(self.FireRate)
 
-			self.Busy = false
-		end
+		self.Busy = false
 	end
 end
 
