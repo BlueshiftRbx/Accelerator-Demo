@@ -6,6 +6,10 @@ local UserInput
 -- Modules
 local Maid
 
+-- References
+local Player
+local Mouse
+
 local Weapon = {}
 
 Weapon.__index = Weapon
@@ -41,12 +45,23 @@ end
 
 function Weapon:Fire()
 	if not self.IsReloading and self.Ammo > 0 then
-		self.Ammo -= 1
+		local character = Player.Character
+
+		if character then
+			local head = character:FindFirstChild("Head")
+
+			if head then
+				self.Ammo -= 1
+
+				ProjectileController:CreateProjectile(Player, head.Position, Mouse.Hit.p)
+			end
+		end
 	end
 end
 
 function Weapon:Reload()
 	if not self.IsReloading and self.Ammo < self.ClipSize then
+
 	end
 end
 
@@ -55,16 +70,12 @@ function Weapon:GetTool()
 end
 
 function Weapon:Destroy()
-<<<<<<< HEAD
-
-=======
 	self.Tool = nil
 	self.ClipSize = nil
 	self.Ammo = nil
 	self.FireRate = nil
 	self.Maid:DoCleaning()
 	self.Maid = nil
->>>>>>> 8680e4ae56d6bf3553175b60164d72d86448577f
 end
 
 function Weapon:Init()
@@ -72,6 +83,8 @@ function Weapon:Init()
 	ProjectileController = self.Controllers.ProjectileController
 	UserInput = self.Controllers.UserInput
 	Maid = self.Shared.Maid
+	Player = self.Player
+	Mouse = self.Player:GetMouse()
 end
 
 return Weapon
