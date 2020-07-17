@@ -59,12 +59,12 @@ function Weapon.new(tool, weaponInfo)
 		Cursor:SetEnabled(true)
 		AmmoUI:SetAmmo(self.Ammo)
 		AmmoUI:SetEnabled(true)
-	end)
+	end))
 
 	self.Maid:GiveTask(tool.Unequipped:Connect(function()
 		Cursor:SetEnabled(false)
 		AmmoUI:SetEnabled(false)
-	end)
+	end))
 
 	return self
 end
