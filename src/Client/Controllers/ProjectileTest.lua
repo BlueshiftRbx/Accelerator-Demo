@@ -6,9 +6,9 @@ local UserInput
 function ProjectileTest:Start()
 	local Mouse = UserInput:Get("Mouse")
 
-	Mouse.LeftDown:Connect(function()
-		ProjectileController:CreateProjectile(self.Player, self.Player.Character.Head.Position, self.Player:GetMouse().Hit.p)
-	end)
+	--Mouse.LeftDown:Connect(function()
+	--	ProjectileController:CreateProjectile(self.Player, self.Player.Character.Head.Position, self.Player:GetMouse().Hit.p)
+	--end)
 end
 
 function ProjectileTest:Init()
