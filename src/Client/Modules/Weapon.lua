@@ -19,6 +19,8 @@ function Weapon.new(tool, weaponInfo)
 
 	-- Object properties
 	self.Tool = tool
+	self.Handle = tool.Handle
+	self.Barrel = tool.Handle.BarrelAttachment
 
 	-- Data properties
 	self.ClipSize = weaponInfo.ClipSize
@@ -26,6 +28,7 @@ function Weapon.new(tool, weaponInfo)
 	self.FireRate = weaponInfo.FireRate
 
 	-- State properties
+	self.Busy = false
 	self.IsReloading = false
 
 	-- Other properties
@@ -34,6 +37,10 @@ function Weapon.new(tool, weaponInfo)
 	-- Setup
 	tool.Activated:Connect(function()
 		self:Fire()
+	end)
+
+	tool.Deactivated:Connect(function()
+
 	end)
 
 	tool.Equipped:Connect(function()
@@ -49,23 +56,27 @@ end
 
 function Weapon:Fire()
 	if not self.IsReloading and self.Ammo > 0 then
-		local character = Player.Character
+		if not self.Busy then
+			self.Busy = true
 
-		if character then
-			local head = character:FindFirstChild("Head")
+			self.Ammo -= 1
 
-			if head then
-				self.Ammo -= 1
+			ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
 
-				ProjectileController:CreateProjectile(Player, head.Position, Mouse.Hit.p)
-			end
+			wait()
+
+			self.Busy = false
 		end
 	end
 end
 
 function Weapon:Reload()
 	if not self.IsReloading and self.Ammo < self.ClipSize then
+		self.IsReloading = true
 
+		self.Ammo = self.ClipSize
+
+		self.IsReloading = false
 	end
 end
 
