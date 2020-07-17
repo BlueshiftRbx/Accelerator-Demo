@@ -92,6 +92,7 @@ function WeaponController:Unequip()
 end
 
 function WeaponController:CharacterAdded(newCharacter)
+	Maid:DoCleaning()
 	if newCharacter then
 		self.Character = newCharacter
 		self.Humanoid = self.Character:WaitForChild("Humanoid")
