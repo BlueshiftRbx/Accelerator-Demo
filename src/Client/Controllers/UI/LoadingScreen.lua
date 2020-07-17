@@ -1,8 +1,14 @@
-local LoadingScreen = {}
-local DataController;
-local UserInput;
+-- Services
+local RunService = game:GetService("RunService")
 
-local Maid;
+-- Controllers
+local DataController
+
+-- Modules
+local UserInput
+local Maid
+
+local LoadingScreen = {}
 
 function LoadingScreen:SetVisible(visibility)
 	self.LoadingMenu.Visible = visibility
@@ -20,7 +26,7 @@ function LoadingScreen:End()
 end
 
 function LoadingScreen:Start()
-	if game:GetService("RunService"):IsStudio() then
+	if RunService:IsStudio() then
 		self:End();
 		return
 	end

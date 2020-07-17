@@ -1,8 +1,17 @@
-local Cursor = {};
+-- Services
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
-local UserInput, Mouse;
+-- Modules
+local UserInput
+
+-- Constants
+local WIDTH = 4
+
+-- Variables
+local Mouse
+
+local Cursor = {};
 
 local WIDTH = 4
 

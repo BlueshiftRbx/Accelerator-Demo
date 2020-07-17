@@ -1,5 +1,7 @@
-local CharacterService = {}
+-- Services
 local Players = game:GetService("Players")
+
+local CharacterService = {}
 
 function CharacterService:CharacterAdded(player, character)
 	if character then

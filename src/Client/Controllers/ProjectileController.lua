@@ -1,10 +1,13 @@
+-- Services
+local RunService = game:GetService("RunService")
+local BulletService
+
+-- Modules
+local Projectile
+
 local ProjectileController = {
 	Projectiles = {};
-};
-local RunService = game:GetService("RunService")
-
-local BulletService;
-local Projectile;
+}
 
 function ProjectileController:CreateProjectile(owner, origin, goal)
 	local newProjectile = Projectile.new(owner, origin, goal)

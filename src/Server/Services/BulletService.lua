@@ -1,7 +1,9 @@
+-- Services
+local Players = game:GetService("Players")
+
 local BulletService = {
 	Client = {};
 }
-local Players = game:GetService("Players")
 
 function BulletService.Client:Replicate(owner, origin, destination)
 	for _, player in pairs(Players:GetPlayers()) do

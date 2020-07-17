@@ -1,13 +1,17 @@
-local Projectile = {};
-Projectile.__index = Projectile
-
+-- Services
 local RunService = game:GetService("RunService")
-local Assets = game:GetService("ReplicatedStorage"):WaitForChild("Assets")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local VELOCITY = 500;
+-- References
+local Assets = ReplicatedStorage:WaitForChild("Assets")
+
+-- Constants
+local VELOCITY = 500
 local GRAVITY = 9.81
 local MASS = 0.025
 
+local Projectile = {};
+Projectile.__index = Projectile
 
 function Projectile.new(owner, origin, goal)
 	assert(typeof(owner) == "Instance" and owner:IsA('Player'), "Owner has to be of Player Instance.")

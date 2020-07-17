@@ -1,11 +1,20 @@
+-- Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- References
+local assetsFolder = ReplicatedStorage:WaitForChild("Assets")
+local UIFolder = assetsFolder:WaitForChild("UI")
+local mainHUD = UIFolder:WaitForChild("MainUI")
+
 local UI = {
+	__aeroPreventStart = true;
+
 	UIControllers = {};
-};
-UI.__aeroPreventStart = true; -- Start is ran by ReplicatedFirst script!
+}
 
 function UI:Init()
 
-	self.UI = game:GetService("ReplicatedStorage"):WaitForChild("Assets"):WaitForChild("UI"):WaitForChild("MainUI"):Clone()
+	self.UI = mainHUD:Clone()
 	self.UI.Parent = self.Player:WaitForChild("PlayerGui")
 
 	for _,x in pairs(script:GetChildren()) do
