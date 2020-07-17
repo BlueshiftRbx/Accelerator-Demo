@@ -21,32 +21,38 @@ local WeaponController = {
 }
 
 function WeaponController:RegisterWeapon(tool)
-	if CollectionService:HasTag(tool, "Primary") then
-		local info = WeaponInfo[tool.Name]
+	if not CollectionService:HasTag(tool, "Registered") then
+		if CollectionService:HasTag(tool, "Primary") then
+			local info = WeaponInfo[tool.Name]
 
-		if info then
-			local weapon = Weapon.new(tool, info)
+			if info then
+				CollectionService:AddTag(tool, "Registered")
 
-			self._Weapons.Primary = weapon
+				local weapon = Weapon.new(tool, info)
 
-			Maid:GiveTask(weapon)
+				self._Weapons.Primary = weapon
 
-			if not self._Current then
-				--self:Equip("Primary")
+				Maid:GiveTask(weapon)
+
+				if not self._Current then
+					--self:Equip("Primary")
+				end
 			end
-		end
-	elseif CollectionService:HasTag(tool, "Secondary") then
-		local info = WeaponInfo[tool.Name]
+		elseif CollectionService:HasTag(tool, "Secondary") then
+			local info = WeaponInfo[tool.Name]
 
-		if info then
-			local weapon = Weapon.new(tool, info)
+			if info then
+				CollectionService:AddTag(tool, "Registered")
 
-			self._Weapons.Secondary = weapon
+				local weapon = Weapon.new(tool, info)
 
-			Maid:GiveTask(weapon)
+				self._Weapons.Secondary = weapon
 
-			if not self._Current then
-				--self:Equip("Secondary")
+				Maid:GiveTask(weapon)
+
+				if not self._Current then
+					--self:Equip("Secondary")
+				end
 			end
 		end
 	end
