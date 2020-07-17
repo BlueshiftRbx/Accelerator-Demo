@@ -20,8 +20,8 @@ function Weapon.new(tool, weaponInfo)
 
 	-- Object properties
 	self.Tool = tool
-	self.Handle = tool.Handle
-	self.Barrel = tool.Handle.BarrelAttachment
+	self.Handle = tool._Handle
+	self.Barrel = self.Handle.BarrelAttachment
 
 	-- Data properties
 	self.ClipSize = weaponInfo.ClipSize
@@ -50,7 +50,7 @@ function Weapon.new(tool, weaponInfo)
 
 				wait()
 			end
-		elseif self.FireMode == "Semiautomatic" then
+		elseif self.FireMode == "Semi" then
 			self:Fire()
 		end
 	end))
