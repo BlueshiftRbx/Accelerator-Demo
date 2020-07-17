@@ -66,6 +66,22 @@ function Weapon.new(tool, weaponInfo)
 		AmmoUI:SetEnabled(false)
 	end))
 
+	self.Maid:GiveTask(UserInput:Get("Keyboard").KeyDown:Connect(function(keycode)
+		if keycode == Enum.KeyCode.R then
+			if not self.IsReloading and self.Ammo < self.ClipSize then
+				self.IsReloading = true
+
+				self.Ammo = self.ClipSize
+
+				AmmoUI:SetAmmo(self.Ammo)
+
+				wait() -- NOTE put reload animation length
+
+				self.IsReloading = false
+			end
+		end
+	end))
+
 	return self
 end
 
