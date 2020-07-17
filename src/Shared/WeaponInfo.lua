@@ -2,6 +2,7 @@ local WeaponInfo = {
 	--[[EXAMPLE DATA
 	["Gun"] = {
 		ClipSize
+		FireMode
 		FireRate
 		ReloadTime // NOTE the time it'll take to reload
 
