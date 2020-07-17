@@ -6,7 +6,7 @@ local RunService = game:GetService("RunService")
 local UserInput
 
 -- Constants
-local WIDTH = 4
+local WIDTH = 2
 
 -- Variables
 local Mouse
