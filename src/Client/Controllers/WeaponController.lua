@@ -32,6 +32,7 @@ function WeaponController:Start()
 			self._Current = nil
 			self._Weapons.Primary = nil
 			self._Weapons.Secondary = nil
+			self.Humanoid = nil
 
 			Maid:DoCleaning()
 		end)
