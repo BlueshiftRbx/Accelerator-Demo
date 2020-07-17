@@ -45,7 +45,7 @@ return setmetatable(Weld, {
 	__call = function(_, instance1, instance2, relative)
 		if instance1:IsA('Tool') then
 			rawget(Weld, "WeldRelative_Tool")(Weld, instance1)
-		elseif instance1:IsA('Part') and instance2:IsA('Part') then
+		elseif instance1:IsA('BasePart') and instance2:IsA('BasePart') then
 			if relative then
 				rawget(Weld, "WeldRelative")(Weld, instance1, instance2)
 			else
