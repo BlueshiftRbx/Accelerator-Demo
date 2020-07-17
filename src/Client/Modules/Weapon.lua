@@ -46,6 +46,7 @@ function Weapon.new(tool, weaponInfo)
 
 	tool.Equipped:Connect(function()
 		Cursor:SetEnabled(true)
+		AmmoUI:SetAmmo(self.Ammo)
 		AmmoUI:SetEnabled(true)
 	end)
 
