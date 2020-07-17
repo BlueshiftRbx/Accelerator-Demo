@@ -31,7 +31,6 @@ function Weld:WeldRelative_Model(model)
 end
 
 function Weld:WeldRelative_Tool(tool)
-	print(tool)
 	local handle = tool:FindFirstChild("Handle") or tool:FindFirstChild("_Handle") or tool:FindFirstChildWhichIsA("BasePart", true);
 
 	for i,v in pairs(tool:GetDescendants()) do
