@@ -14,8 +14,8 @@ local WeaponInfo = {
 	--]]
 	["SMG"] = {
 		ClipSize = 30;
+		FireMode = "Automatic";
 		FireRate = 0.05;
-		ReloadSpeed = 1;
 
 		Anims = {
 			HoldAnim = "";
@@ -26,6 +26,7 @@ local WeaponInfo = {
 
 	["Pistol"] = {
 		ClipSize = 12;
+		FireMode = "Semiautomatic";
 		FireRate = 1;
 
 		Anims = {
