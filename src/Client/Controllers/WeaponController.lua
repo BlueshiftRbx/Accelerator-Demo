@@ -35,8 +35,6 @@ function WeaponController:Start()
 
 			Maid:DoCleaning()
 		end)
-
-		self:EquipLast()
 	end)
 end
 
