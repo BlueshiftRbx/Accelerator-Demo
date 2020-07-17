@@ -55,12 +55,16 @@ function Weapon:GetTool()
 end
 
 function Weapon:Destroy()
+<<<<<<< HEAD
+
+=======
 	self.Tool = nil
 	self.ClipSize = nil
 	self.Ammo = nil
 	self.FireRate = nil
 	self.Maid:DoCleaning()
 	self.Maid = nil
+>>>>>>> 8680e4ae56d6bf3553175b60164d72d86448577f
 end
 
 function Weapon:Init()
