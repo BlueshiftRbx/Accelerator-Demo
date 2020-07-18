@@ -22,7 +22,7 @@ function WeaponService:Start()
 
 				if loadout then
 					local primaryTool = Assets:GetTool(loadout.Primary)
-					local secondaryTool = Assets:GetTool(loudout.Secondary)
+					local secondaryTool = Assets:GetTool(loadout.Secondary)
 
 					if primaryTool then
 						CollectionService:AddTag(primaryTool, "Weapon")
