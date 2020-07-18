@@ -103,13 +103,11 @@ function Weapon:Reload()
 	if not self.IsReloading and self.Ammo < self.ClipSize then
 		self.IsReloading = true
 
-		AmmoUI:SetEnabled(false)
-
+		AmmoUI:SetAmmo("--")
 		wait(1)
 
 		self.Ammo = self.ClipSize
 		AmmoUI:SetAmmo(self.Ammo)
-		AmmoUI:SetEnabled(true)
 
 		self.IsReloading = false
 	end
