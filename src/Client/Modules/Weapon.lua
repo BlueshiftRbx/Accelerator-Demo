@@ -122,6 +122,8 @@ function Weapon:Fire()
 		self.Ammo -= 1
 		AmmoUI:SetAmmo(self.Ammo)
 
+		self.FiringAnim:Play()
+
 		local effect = Assets:GetParticle("MuzzleFlash")
 
 		if effect then
