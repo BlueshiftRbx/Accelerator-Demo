@@ -4,9 +4,6 @@ local ContentProvider = game:GetService("ContentProvider")
 local SoundService = game:GetService("SoundService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- Services
-local RunService = game:GetService("RunService")
-
 -- Controllers
 local DataController
 
