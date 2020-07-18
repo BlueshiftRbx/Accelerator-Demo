@@ -4,9 +4,6 @@ local ServerStorage = game:GetService("ServerStorage")
 local CollectionService = game:GetService("CollectionService")
 local DataService
 
--- Modules
-local Weld
-
 -- References
 local assetsFolder = ServerStorage.Assets
 local toolsFolder = assetsFolder.Tools
@@ -43,18 +40,12 @@ function WeaponService:Start()
 						CollectionService:AddTag(primaryTool, "Weapon")
 						CollectionService:AddTag(primaryTool, "Primary")
 
-						Weld(primaryTool)
-						Weld(primaryTool._Handle, character:FindFirstChild("RightHand"))
-
 						primaryTool.Parent = backpack
 					end
 
 					if secondaryTool then
 						CollectionService:AddTag(secondaryTool, "Weapon")
 						CollectionService:AddTag(secondaryTool, "Secondary")
-
-						Weld(secondaryTool)
-						Weld(secondaryTool._Handle, character:FindFirstChild("RightHand"))
 
 						secondaryTool.Parent = backpack
 					end
@@ -66,7 +57,6 @@ end
 
 function WeaponService:Init()
 	DataService = self.Services.DataService
-	Weld = self.Shared.Weld
 end
 
 return WeaponService
