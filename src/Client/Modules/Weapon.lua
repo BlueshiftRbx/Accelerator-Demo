@@ -43,7 +43,7 @@ function Weapon.new(tool, info)
 	self.HoldAnim = humanoid:LoadAnimation(self.HoldAnim)
 
 	self.HoldAnim.Name = info.Anims.HoldAnim
-	self.HoldAnim.Priority = Enum.AnimationPriority.Idle
+	self.HoldAnim.Priority = Enum.AnimationPriority.Movement
 	self.HoldAnim.Looped = true
 
 	self.FiringAnim = humanoid:LoadAnimation(self.FiringAnim)
