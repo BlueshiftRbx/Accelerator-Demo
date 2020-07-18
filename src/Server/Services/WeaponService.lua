@@ -1,6 +1,5 @@
 -- Services
 local Players = game:GetService("Players")
-local ServerStorage = game:GetService("ServerStorage")
 local CollectionService = game:GetService("CollectionService")
 local DataService
 
