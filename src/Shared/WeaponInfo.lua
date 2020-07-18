@@ -40,7 +40,7 @@ local WeaponInfo = {
 	["Pistol"] = {
 		Config = {
 			ClipSize = 12;
-			FireMode = "Semiautomatic";
+			FireMode = "Semi";
 			FireRate = 1;
 		};
 
