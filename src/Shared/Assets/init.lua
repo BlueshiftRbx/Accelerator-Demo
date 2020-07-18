@@ -5,6 +5,7 @@ local Debris = game:GetService("Debris")
 local ServerStorage
 
 -- Modules
+local Animations = require(script:WaitForChild("Animations"))
 local WeaponInfo
 
 -- Shared references
@@ -51,8 +52,20 @@ function Assets:GetSound(name, duration)
 	end
 end
 
-function Assets:GetAnimation(name, duration)
+function Assets:GetAnimation(name)
 	assert(type(name) == "string", "Name must be a string")
+
+	local animId = Animations[name]
+
+	if animId then
+		local animation = Instance.new("Animation")
+
+		animation.Name = name
+		animation.AnimationId = animId
+
+		return animation
+
+	end
 end
 
 function Assets:GetEntity(name, duration)
