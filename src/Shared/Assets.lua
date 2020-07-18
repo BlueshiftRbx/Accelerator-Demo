@@ -8,11 +8,12 @@ local ServerStorage
 local WeaponInfo
 
 -- Shared references
-local assetsFolder = ReplicatedStorage:WaitForChild("Assets")
-local particlesFolder = assetsFolder:WaitForChild("Particles")
-local soundsFolder = assetsFolder:WaitForChild("Sounds")
+local sharedAssetsFolder = ReplicatedStorage:WaitForChild("Assets")
+local particlesFolder = sharedAssetsFolder:WaitForChild("Particles")
+local soundsFolder = sharedAssetsFolder:WaitForChild("Sounds")
 
 -- Server references
+local serverAssetsFolder
 local entityFolder
 local toolsFolder
 
@@ -90,8 +91,9 @@ function Assets:Init()
 	if RunService:IsServer() then
 		ServerStorage = game:GetService("ServerStorage")
 
-		entityFolder = ServerStorage:WaitForChild("Entities")
-		toolsFolder = ServerStorage:WaitForChild("Tools")
+		serverAssetsFolder = ServerStorage:WaitForChild("Assets")
+		entityFolder = serverAssetsFolder:WaitForChild("Entities")
+		toolsFolder = serverAssetsFolder:WaitForChild("Tools")
 	end
 end
 
