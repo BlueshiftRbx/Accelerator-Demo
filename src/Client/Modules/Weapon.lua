@@ -34,7 +34,7 @@ function Weapon.new(tool, info)
 	self.FireMode = info.Config.FireMode
 
 	-- Asset properties
-	local humanoid = tool.Parent:WaitForChild("Humanoid")
+	local humanoid = Player.Character:WaitForChild("Humanoid")
 
 	self.HoldAnim = Assets:GetAnimation(info.Anims.HoldAnim)
 	self.FiringAnim = Assets:GetAnimation(info.Anims.FiringAnim)
@@ -53,7 +53,12 @@ function Weapon.new(tool, info)
 
 
 	self.FiringSound = Assets:GetSound(info.Sounds.FiringSound)
+
+	self.FiringSound.Parent = self.Handle
+
 	self.ReloadSound = Assets:GetSound(info.Sounds.ReloadSound)
+
+	self.ReloadSound.Parent = self.Handle
 
 	-- State properties
 	self.Busy = false
