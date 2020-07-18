@@ -4,6 +4,9 @@ local ContentProvider = game:GetService("ContentProvider")
 local SoundService = game:GetService("SoundService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+-- Services
+local RunService = game:GetService("RunService")
+
 -- Controllers
 local DataController
 
@@ -11,7 +14,7 @@ local DataController
 local UserInput
 local Maid
 
-local SKIP_INTRO = false;
+local SKIP_INTRO = RunService:IsStudio()
 
 
 local LoadingScreen = {}
