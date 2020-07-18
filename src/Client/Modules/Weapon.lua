@@ -5,6 +5,7 @@ local UserInput
 local AmmoUI
 
 -- Modules
+local Effects
 local Maid
 
 -- References
@@ -82,6 +83,14 @@ function Weapon:Fire()
 		self.Ammo -= 1
 		AmmoUI:SetAmmo(self.Ammo)
 
+		local effect = Effects:GetEffect("MuzzleFlash")
+
+		if effect then
+			effect.Parent = self.Barrel
+
+			effect:Emit(3)
+		end
+
 		ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
 
 		wait(self.FireRate)
@@ -123,6 +132,7 @@ function Weapon:Init()
 	Cursor = self.Controllers.UI.UIControllers.Cursor
 	ProjectileController = self.Controllers.ProjectileController
 	UserInput = self.Controllers.UserInput
+	Effects = self.Shared.Effects
 	Maid = self.Shared.Maid
 	Player = self.Player
 	Mouse = self.Player:GetMouse()
