@@ -1,39 +1,57 @@
 local WeaponInfo = {
 	--[[EXAMPLE DATA
 	["Gun"] = {
-		ClipSize
-		FireMode
-		FireRate
-		ReloadTime // NOTE the time it'll take to reload
+		Config = {
+			ClipSize
+			FireMode
+			FireRate
+		};
 
 		Anims = {
 			HoldAnim
 			FiringAnim
-			ReloadingAnim
-		}
+		};
+
+		Sounds = {
+			EquipSound
+			FiringSound
+			ReloadSound
+		};
 	}
 	--]]
 	["SMG"] = {
-		ClipSize = 30;
-		FireMode = "Automatic";
-		FireRate = 0.05;
+		Config = {
+			ClipSize = 30;
+			FireMode = "Automatic";
+			FireRate = 0.05;
+		};
 
 		Anims = {
-			HoldAnim = "";
-			FiringAnim = "";
-			ReloadingAnim = "";
+			HoldAnim = "rbxassetid://5368735024";
+			FiringAnim = "rbxassetid://5368738423";
+		};
+
+		Sounds = {
+			FiringSound = "rbxassetid://5363102727";
+			ReloadSound = "";
 		};
 	};
 
 	["Pistol"] = {
-		ClipSize = 12;
-		FireMode = "Semiautomatic";
-		FireRate = 1;
+		Config = {
+			ClipSize = 12;
+			FireMode = "Semiautomatic";
+			FireRate = 1;
+		};
 
 		Anims = {
 			HoldAnim = "";
 			FiringAnim = "";
-			ReloadingAnim = "";
+		};
+
+		Sounds = {
+			FiringSound = "";
+			ReloadSound = "";
 		};
 	};
 }
