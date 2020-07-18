@@ -1,3 +1,6 @@
+-- Services
+local Debris = game:GetService("Debris")
+
 -- Controllers
 local Cursor
 local ProjectileController
@@ -16,7 +19,7 @@ local Weapon = {}
 
 Weapon.__index = Weapon
 
-function Weapon.new(tool, weaponInfo)
+function Weapon.new(tool, info)
 	local self = setmetatable({}, Weapon)
 
 	-- Object properties
@@ -25,10 +28,32 @@ function Weapon.new(tool, weaponInfo)
 	self.Barrel = self.Handle:WaitForChild("BarrelAttachment")
 
 	-- Data properties
-	self.ClipSize = weaponInfo.Config.ClipSize
-	self.Ammo = weaponInfo.Config.ClipSize
-	self.FireRate = weaponInfo.Config.FireRate
-	self.FireMode = weaponInfo.Config.FireMode
+	self.ClipSize = info.Config.ClipSize
+	self.Ammo = info.Config.ClipSize
+	self.FireRate = info.Config.FireRate
+	self.FireMode = info.Config.FireMode
+
+	-- Asset properties
+	local humanoid = tool.Parent:WaitForChild("Humanoid")
+
+	self.HoldAnim = Assets:GetAnimation(info.Anims.HoldAnim)
+	self.FiringAnim = Assets:GetAnimation(info.Anims.FiringAnim)
+
+	self.HoldAnim = humanoid:LoadAnimation(self.HoldAnim)
+
+	self.HoldAnim.Name = info.Anims.HoldAnim
+	self.HoldAnim.Priority = Enum.AnimationPriority.Idle
+	self.HoldAnim.Looped = true
+
+	self.FiringAnim = humanoid:LoadAnimation(self.FiringAnim)
+
+	self.FiringAnim.Name = info.Anims.FiringAnim
+	self.FiringAnim.Priority = Enum.AnimationPriority.Action
+	self.FiringAnim.Looped = false
+
+
+	self.FiringSound = Assets:GetSound(info.Sounds.FiringSound)
+	self.ReloadSound = Assets:GetSound(info.Sounds.ReloadSound)
 
 	-- State properties
 	self.Busy = false
@@ -60,11 +85,19 @@ function Weapon.new(tool, weaponInfo)
 		Cursor:SetEnabled(true)
 		AmmoUI:SetAmmo(self.Ammo)
 		AmmoUI:SetEnabled(true)
+
+		if not self.HoldAnim.IsPlaying then
+			self.HoldAnim:Play()
+		end
 	end))
 
 	self.Maid:GiveTask(tool.Unequipped:Connect(function()
 		Cursor:SetEnabled(false)
 		AmmoUI:SetEnabled(false)
+
+		if self.HoldAnim.IsPlaying then
+			self.HoldAnim:Stop()
+		end
 	end))
 
 	self.Maid:GiveTask(UserInput:Get("Keyboard").KeyDown:Connect(function(keycode)
@@ -86,10 +119,18 @@ function Weapon:Fire()
 		local effect = Assets:GetParticle("MuzzleFlash")
 
 		if effect then
+			Debris:AddItem(effect, effect.Lifetime.Max)
+
 			effect.Parent = self.Barrel
 
 			effect:Emit(3)
 		end
+
+		if not self.FiringAnim.IsPlaying then
+			self.FiringAnim:Play()
+		end
+
+		self.FiringSound:Play()
 
 		ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
 
@@ -104,6 +145,8 @@ function Weapon:Reload()
 		self.IsReloading = true
 
 		AmmoUI:SetAmmo("--")
+		self.ReloadSound:Play()
+
 		wait(1)
 
 		self.Ammo = self.ClipSize
