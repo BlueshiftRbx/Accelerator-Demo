@@ -77,7 +77,7 @@ function LoadingScreen:Start()
 end
 
 function LoadingScreen:Init()
-	DataController = self.Controllers.Data
+	DataController = self.Controllers.DataController
 	UserInput = self.Controllers.UserInput
 	Maid = self.Shared.Maid
 
