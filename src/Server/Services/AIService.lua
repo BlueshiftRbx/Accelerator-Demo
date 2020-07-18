@@ -1,9 +1,11 @@
 local AIService = {};
 local Assets;
+local Entity;
 
 local SpawnedUnits = {};
 
 function AIService:Spawn(entityName)
+	local entity = Assets:GetEntity(entityName)
 
 end
 
