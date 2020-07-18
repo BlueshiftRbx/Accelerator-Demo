@@ -1,4 +1,5 @@
 -- Services
+local SoundService = game:GetService("SoundService")
 local Debris = game:GetService("Debris")
 
 -- Controllers
@@ -131,11 +132,8 @@ function Weapon:Fire()
 			effect:Emit(3)
 		end
 
-		if not self.FiringAnim.IsPlaying then
-			self.FiringAnim:Play()
-		end
-
-		self.FiringSound:Play()
+		-- NOTE Playing a sound normally sometimes restarts it (SoundService fixes it)
+		SoundService:PlayLocalSound(self.FiringSound)
 
 		ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
 
@@ -152,7 +150,7 @@ function Weapon:Reload()
 		AmmoUI:SetAmmo("--")
 		self.ReloadSound:Play()
 
-		wait(1)
+		self.ReloadSound.Ended:Wait()
 
 		self.Ammo = self.ClipSize
 		AmmoUI:SetAmmo(self.Ammo)
