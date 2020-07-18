@@ -83,7 +83,7 @@ function Weapon:Fire()
 		self.Ammo -= 1
 		AmmoUI:SetAmmo(self.Ammo)
 
-		local effect = Assets:GetEffect("MuzzleFlash")
+		local effect = Assets:GetParticle("MuzzleFlash")
 
 		if effect then
 			effect.Parent = self.Barrel
