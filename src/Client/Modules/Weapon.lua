@@ -25,10 +25,10 @@ function Weapon.new(tool, weaponInfo)
 	self.Barrel = self.Handle:WaitForChild("BarrelAttachment")
 
 	-- Data properties
-	self.ClipSize = weaponInfo.ClipSize
-	self.Ammo = weaponInfo.ClipSize
-	self.FireRate = weaponInfo.FireRate
-	self.FireMode = weaponInfo.FireMode
+	self.ClipSize = weaponInfo.Config.ClipSize
+	self.Ammo = weaponInfo.Config.ClipSize
+	self.FireRate = weaponInfo.Config.FireRate
+	self.FireMode = weaponInfo.Config.FireMode
 
 	-- State properties
 	self.Busy = false
