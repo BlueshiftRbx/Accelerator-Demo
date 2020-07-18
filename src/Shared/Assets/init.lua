@@ -6,7 +6,6 @@ local ServerStorage
 
 -- Modules
 local Animations = require(script:WaitForChild("Animations"))
-local WeaponInfo
 
 -- Shared references
 local sharedAssetsFolder = ReplicatedStorage:WaitForChild("Assets")
@@ -99,8 +98,6 @@ function Assets:GetTool(name)
 end
 
 function Assets:Init()
-	WeaponInfo = self.Shared.WeaponInfo
-
 	if RunService:IsServer() then
 		ServerStorage = game:GetService("ServerStorage")
 
