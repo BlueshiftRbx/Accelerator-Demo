@@ -6,12 +6,12 @@ return {
 	};
 
 	Anims = {
-		HoldAnim = "rbxassetid://5368735024";
-		FiringAnim = "rbxassetid://5368738423";
+		HoldAnim = "SMG_HOLD";
+		FiringAnim = "SMG_FIRE";
 	};
 
 	Sounds = {
-		FiringSound = "rbxassetid://5363102727";
-		ReloadSound = "";
+		FiringSound = "SMG_SHOT";
+		ReloadSound = "SMG_RELOADED";
 	};
 };
