@@ -1,7 +1,15 @@
-local EntityInfo = {};
+local EntityInfo = {
+	_Entities = {};
+}
 
-for _, entity in next, script:GetChildren() do
-	EntityInfo[entity.Name] = require(entity)
+function EntityInfo:GetInfo(name)
+	return self._Entities[name]
+end
+
+function EntityInfo:Init()
+	for _,mod in next, script:GetChildren() do
+		self._Entities[mod.Name] = require(mod)
+	end
 end
 
 return EntityInfo
