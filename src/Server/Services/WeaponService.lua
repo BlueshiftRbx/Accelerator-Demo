@@ -10,7 +10,7 @@ local WeaponService = {}
 
 function WeaponService:Start()
 	Players.PlayerAdded:Connect(function(player)
-		player.CharacterAdded:Connect(function(character)
+		player.CharacterAdded:Connect(function()
 			repeat wait() until DataService.Cache[player.UserId]
 
 			local backpack = player:WaitForChild("Backpack")
