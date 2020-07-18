@@ -4,20 +4,8 @@ local ServerStorage = game:GetService("ServerStorage")
 local CollectionService = game:GetService("CollectionService")
 local DataService
 
--- References
-local assetsFolder = ServerStorage.Assets
-local toolsFolder = assetsFolder.Tools
-
--- Methods
-function GetTool(toolName)
-	if toolName then
-		local tool = toolsFolder:FindFirstChild(toolName)
-
-		if tool and tool:IsA("Tool") then
-			return tool:Clone()
-		end
-	end
-end
+-- Modules
+local Assets
 
 local WeaponService = {}
 
@@ -33,8 +21,8 @@ function WeaponService:Start()
 				local loadout = data.Loadout
 
 				if loadout then
-					local primaryTool = GetTool(loadout.Primary)
-					local secondaryTool = GetTool(loadout.Secondary)
+					local primaryTool = Assets:GetTool(loadout.Primary)
+					local secondaryTool = Assets:GetTool(loudout.Secondary)
 
 					if primaryTool then
 						CollectionService:AddTag(primaryTool, "Weapon")
@@ -57,6 +45,7 @@ end
 
 function WeaponService:Init()
 	DataService = self.Services.DataService
+	Assets = self.Shared.Assets
 end
 
 return WeaponService
