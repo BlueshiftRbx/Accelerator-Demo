@@ -2,7 +2,7 @@ return {
 	Config = {
 		ClipSize = 30;
 		FireMode = "Automatic";
-		FireRate = 0.05;
+		FireRate = 0.025;
 	};
 
 	Anims = {
