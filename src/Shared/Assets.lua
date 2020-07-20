@@ -5,6 +5,7 @@ local ServerStorage
 
 -- Shared references
 local sharedAssetsFolder = ReplicatedStorage:WaitForChild("Assets")
+local bulletsFolder = sharedAssetsFolder:WaitForChild("Bullets")
 local animationsFolder = sharedAssetsFolder:WaitForChild("Animations")
 local particlesFolder = sharedAssetsFolder:WaitForChild("Particles")
 local soundsFolder = sharedAssetsFolder:WaitForChild("Sounds")
@@ -15,6 +16,18 @@ local entityFolder
 local toolsFolder
 
 local Assets = {}
+
+function Assets:GetBullet(name)
+	assert(type(name) == "string", "Name must be a string")
+
+	local bullet = bulletsFolder:FindFirstChild(name)
+
+	if bullet then
+		bullet = bullet:Clone()
+
+		return bullet
+	end
+end
 
 function Assets:GetParticle(name)
 	assert(type(name) == "string", "Name must be a string")
