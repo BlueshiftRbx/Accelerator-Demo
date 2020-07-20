@@ -5,6 +5,9 @@ local BulletService
 -- Modules
 local Projectile
 
+-- Constants
+local MAX_STUDS_ALLOWED = 300 -- The max amount of studs a projectile is allowed to travel before it is automatically deleted
+
 local ProjectileController = {
 	Projectiles = {};
 }
@@ -24,6 +27,14 @@ function ProjectileController:Start()
 	RunService.Stepped:Connect(function(_, dt)
 		for i=#self.Projectiles, 1, -1 do
 			local projectile = self.Projectiles[i]
+
+			if (projectile.Origin - projectile.Position).Magnitude > MAX_STUDS_ALLOWED then
+				projectile:Destroy()
+				table.remove(self.Projectiles, i)
+
+				continue
+			end
+
 			local completed = projectile:Step(dt)
 			if completed then
 				projectile:Destroy()
