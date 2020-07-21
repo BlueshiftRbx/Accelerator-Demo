@@ -47,5 +47,3 @@
 [*AeroGameFramework*](https://sleitnick.github.io/AeroGameFramework/) - AGF documentation.
 
 [*Rojo*](https://rojo.space/docs/) - Rojo documentation.
-
-[*Codestream*](https://docs.codestream.com/userguide/) - A user guide going over features.

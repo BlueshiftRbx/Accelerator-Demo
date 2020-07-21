@@ -1,3 +1,7 @@
+-- Services
+local SoundService = game:GetService("SoundService")
+local Debris = game:GetService("Debris")
+
 -- Controllers
 local Cursor
 local ProjectileController
@@ -5,6 +9,7 @@ local UserInput
 local AmmoUI
 
 -- Modules
+local Assets
 local Maid
 
 -- References
@@ -15,19 +20,46 @@ local Weapon = {}
 
 Weapon.__index = Weapon
 
-function Weapon.new(tool, weaponInfo)
+function Weapon.new(tool, info)
 	local self = setmetatable({}, Weapon)
 
 	-- Object properties
 	self.Tool = tool
-	self.Handle = tool._Handle
-	self.Barrel = self.Handle.BarrelAttachment
+	self.Handle = tool:WaitForChild("_Handle")
+	self.Barrel = self.Handle:WaitForChild("BarrelAttachment")
 
 	-- Data properties
-	self.ClipSize = weaponInfo.ClipSize
-	self.Ammo = weaponInfo.ClipSize
-	self.FireRate = weaponInfo.FireRate
-	self.FireMode = weaponInfo.FireMode
+	self.ClipSize = info.Config.ClipSize
+	self.Ammo = info.Config.ClipSize
+	self.FireRate = info.Config.FireRate
+	self.FireMode = info.Config.FireMode
+
+	-- Asset properties
+	local humanoid = Player.Character:WaitForChild("Humanoid")
+
+	self.HoldAnim = Assets:GetAnimation(info.Anims.HoldAnim)
+	self.FiringAnim = Assets:GetAnimation(info.Anims.FiringAnim)
+
+	self.HoldAnim = humanoid:LoadAnimation(self.HoldAnim)
+
+	self.HoldAnim.Name = info.Anims.HoldAnim
+	self.HoldAnim.Priority = Enum.AnimationPriority.Movement
+	self.HoldAnim.Looped = true
+
+	self.FiringAnim = humanoid:LoadAnimation(self.FiringAnim)
+
+	self.FiringAnim.Name = info.Anims.FiringAnim
+	self.FiringAnim.Priority = Enum.AnimationPriority.Action
+	self.FiringAnim.Looped = false
+
+
+	self.FiringSound = Assets:GetSound(info.Sounds.FiringSound)
+
+	self.FiringSound.Parent = self.Handle
+
+	self.ReloadSound = Assets:GetSound(info.Sounds.ReloadSound)
+
+	self.ReloadSound.Parent = self.Handle
 
 	-- State properties
 	self.Busy = false
@@ -59,26 +91,24 @@ function Weapon.new(tool, weaponInfo)
 		Cursor:SetEnabled(true)
 		AmmoUI:SetAmmo(self.Ammo)
 		AmmoUI:SetEnabled(true)
+
+		if not self.HoldAnim.IsPlaying then
+			self.HoldAnim:Play()
+		end
 	end))
 
 	self.Maid:GiveTask(tool.Unequipped:Connect(function()
 		Cursor:SetEnabled(false)
 		AmmoUI:SetEnabled(false)
+
+		if self.HoldAnim.IsPlaying then
+			self.HoldAnim:Stop()
+		end
 	end))
 
 	self.Maid:GiveTask(UserInput:Get("Keyboard").KeyDown:Connect(function(keycode)
 		if keycode == Enum.KeyCode.R then
-			if not self.IsReloading and self.Ammo < self.ClipSize then
-				self.IsReloading = true
-
-				self.Ammo = self.ClipSize
-
-				AmmoUI:SetAmmo(self.Ammo)
-
-				wait() -- NOTE put reload animation length
-
-				self.IsReloading = false
-			end
+			self:Reload()
 		end
 	end))
 
@@ -92,6 +122,21 @@ function Weapon:Fire()
 		self.Ammo -= 1
 		AmmoUI:SetAmmo(self.Ammo)
 
+		self.FiringAnim:Play()
+
+		local effect = Assets:GetParticle("MuzzleFlash")
+
+		if effect then
+			Debris:AddItem(effect, effect.Lifetime.Max)
+
+			effect.Parent = self.Barrel
+
+			effect:Emit(3)
+		end
+
+		-- NOTE Playing a sound normally sometimes restarts it (SoundService fixes it)
+		SoundService:PlayLocalSound(self.FiringSound)
+
 		ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
 
 		wait(self.FireRate)
@@ -103,6 +148,11 @@ end
 function Weapon:Reload()
 	if not self.IsReloading and self.Ammo < self.ClipSize then
 		self.IsReloading = true
+
+		AmmoUI:SetAmmo("--")
+		self.ReloadSound:Play()
+
+		self.ReloadSound.Ended:Wait()
 
 		self.Ammo = self.ClipSize
 		AmmoUI:SetAmmo(self.Ammo)
@@ -128,6 +178,7 @@ function Weapon:Init()
 	Cursor = self.Controllers.UI.UIControllers.Cursor
 	ProjectileController = self.Controllers.ProjectileController
 	UserInput = self.Controllers.UserInput
+	Assets = self.Shared.Assets
 	Maid = self.Shared.Maid
 	Player = self.Player
 	Mouse = self.Player:GetMouse()

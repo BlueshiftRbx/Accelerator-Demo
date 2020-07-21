@@ -1,7 +1,7 @@
 local Ammo = {};
 
 function Ammo:SetAmmo(ammo)
-	self.AmmoUI.Text = ("%d / ∞"):format(ammo)
+	self.AmmoUI.Text = tostring(ammo).. " / ∞"
 end
 
 function Ammo:SetEnabled(enabled)

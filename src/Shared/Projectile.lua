@@ -1,16 +1,35 @@
 -- Services
+local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local BulletService
+
+-- Modules
+local Assets
 
 -- References
-local Assets = ReplicatedStorage:WaitForChild("Assets")
+local charactersFolder = Workspace:WaitForChild("Characters")
+local bulletsFolder = Workspace:WaitForChild("Bullets")
+local Player
 
 -- Constants
 local VELOCITY = 500
 local GRAVITY = 9.81
 local MASS = 0.025
 
-local Projectile = {};
+-- Methods
+function LookAtCF(origin, direction) -- NOTE Creates a CFrame object from origin looking at direction
+	assert(typeof(origin) == "Vector3", "Origin must be a Vector3")
+	assert(typeof(direction) == "Vector3", "Direction must be a Vector3")
+
+	local frontVect = (direction - origin).Unit
+	local upVect = Vector3.new(0, 1, 0)
+	local rightVect = frontVect:Cross(upVect)
+	local upVect2 = rightVect:Cross(frontVect)
+
+	return CFrame.fromMatrix(direction, rightVect, upVect2, rightVect:Cross(upVect2).Unit)
+end
+
+local Projectile = {}
 Projectile.__index = Projectile
 
 function Projectile.new(owner, origin, goal)
@@ -20,61 +39,79 @@ function Projectile.new(owner, origin, goal)
 
 	local self = setmetatable({}, Projectile)
 
-	self.Origin = origin;
-	self.Goal = goal;
-	self.Position = self.Origin;
-	self.LastPosition = self.Origin;
+	self.Origin = origin
+	self.Goal = goal
+	self.Position = self.Origin
+	self.LastPosition = self.Origin
 
-	self.Velocity = VELOCITY;
+	self.Velocity = VELOCITY
 
-	self.LookVector = CFrame.new(origin, goal).LookVector
+	self.LookVector = LookAtCF(origin, goal).LookVector
 
 	if (RunService:IsClient()) then -- If client then create visual representation of the bullet.
-		self.Bullet = Assets.Effects.Bullet:Clone();
+		self.Bullet = Assets:GetBullet("Bullet")
 		self.Bullet.CFrame = CFrame.new(self.Origin)
-		self.Bullet.Parent = workspace.Bullets
+		self.Bullet.Parent = bulletsFolder
 	end
 
-	if (game:GetService("Players").LocalPlayer == owner) then
-		self.Services.BulletService:Replicate(origin, goal)
+	if (Player and Player == owner) then
+		BulletService:Replicate(origin, goal)
 	end
 
 	return self
 end
 
 function Projectile:Step(dt)
-	local newPosition = self.Position + self.LookVector * (self.Velocity * dt) - Vector3.new(0, GRAVITY * dt * MASS, 0);
+	local newPosition = self.Position + self.LookVector * (self.Velocity * dt) - Vector3.new(0, GRAVITY * dt * MASS, 0)
 
-	local didHit, raycastData = self:_Raycast(self.Position, newPosition)
-	if didHit then
-		return true
+	local castResult = self:Raycast(self.Position, newPosition)
+
+	if castResult then
+		return castResult
 	else
-		self.LookVector = CFrame.new(self.Position, newPosition).LookVector
+		self.LookVector = LookAtCF(self.Position, newPosition).LookVector
 		self.LastPosition = self.Position
 		self.Position = newPosition
 
 		local magnitude = (self.LastPosition - self.Position).Magnitude
+
 		self.Bullet.Size = Vector3.new(0.2, 0.2, magnitude)
-		self.Bullet.CFrame = CFrame.new(self.LastPosition+self.LookVector*(magnitude/2), self.Position)
-		self.Bullet["1"].Position = Vector3.new(0,0,-magnitude/2) --> Set trail size to be equal to distance passed in
-		self.Bullet["2"].Position = Vector3.new(0,0, magnitude/2) --^ 	the last step, gives effect of speed
+		self.Bullet.CFrame = LookAtCF(self.LastPosition + self.LookVector * (magnitude/2), self.Position)
+		self.Bullet.StartAttachment.Position = Vector3.new(0, 0, -magnitude/2)
+		self.Bullet.EndAttachment.Position = Vector3.new(0, 0, magnitude/2)
 
 		return false
 	end
 end
 
-function Projectile:_Raycast(a, b)
-	local ray = Ray.new(a, (b - a).unit * (b - a).magnitude)
+function Projectile:Raycast(position1, position2)
+	local position = position1
+	local direction = (position2 - position1).Unit * (position2 - position1).Magnitude
 
-	local hit, position, normal = workspace:FindPartOnRayWithIgnoreList(ray, {workspace.Characters, workspace.Bullets}, true, true)
+	local rayParams = RaycastParams.new()
 
-	return hit~=nil, {
-		Hit = hit; Position = position; Normal = normal
-	}
+	rayParams.FilterDescendantsInstances = {charactersFolder, bulletsFolder}
+	rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+	rayParams.IgnoreWater = true
+
+	local castResult = Workspace:Raycast(position, direction, rayParams)
+
+	return castResult
 end
 
 function Projectile:Destroy()
-	if self.Bullet then self.Bullet:Destroy() end
+	if self.Bullet then
+		self.Bullet:Destroy()
+	end
 end
 
-return Projectile;
+function Projectile:Init()
+	BulletService = self.Services.BulletService
+	Assets = self.Shared.Assets
+
+	if RunService:IsClient() then
+		Player = self.Player
+	end
+end
+
+return Projectile

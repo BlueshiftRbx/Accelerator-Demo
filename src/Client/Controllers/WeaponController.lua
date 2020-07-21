@@ -23,7 +23,7 @@ local WeaponController = {
 function WeaponController:RegisterWeapon(tool)
 	if not CollectionService:HasTag(tool, "Registered") then
 		if CollectionService:HasTag(tool, "Primary") then
-			local info = WeaponInfo[tool.Name]
+			local info = WeaponInfo:GetInfo(tool.Name)
 
 			if info then
 				CollectionService:AddTag(tool, "Registered")
@@ -39,7 +39,7 @@ function WeaponController:RegisterWeapon(tool)
 				end
 			end
 		elseif CollectionService:HasTag(tool, "Secondary") then
-			local info = WeaponInfo[tool.Name]
+			local info = WeaponInfo:GetInfo(tool.Name)
 
 			if info then
 				CollectionService:AddTag(tool, "Registered")
