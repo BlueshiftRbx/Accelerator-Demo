@@ -1,7 +1,7 @@
 -- Services
 local RunService = game:GetService("RunService")
 local ContentProvider = game:GetService("ContentProvider")
-local SoundService = game:Ge1tService("SoundService")
+local SoundService = game:GetService("SoundService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- Controllers
