@@ -1,20 +1,34 @@
-local AIService = {};
-local Assets;
-local Entity;
+-- Modules
+local Entity
+local EntityInfo
+local Assets
 
-local SpawnedUnits = {};
+-- Constants
+local UNIT_LIMIT = 80
+
+local AIService = {Units = {}}
 
 function AIService:Spawn(entityName)
-	local entity = Assets:GetEntity(entityName)
+    if #self.Units < UNIT_LIMIT then
+        local info = EntityInfo:GetInfo(entityName)
 
+        if info then
+            local bodyModel = Assets:GetEntity(entityName)
+
+            local entity = Entity.new(bodyModel, info)
+
+            table.insert(self.Units, entity)
+        end
+    end
 end
 
 function AIService:Start()
-
 end
 
 function AIService:Init()
-	Assets = self.Shared.Assets
+    Entity = self.Modules.Entity
+    EntityInfo = self.Shared.EntityInfo
+    Assets = self.Shared.Assets
 end
 
-return AIService;
+return AIService
