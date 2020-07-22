@@ -4,9 +4,9 @@ local Entity;
 
 local SpawnedUnits = {};
 
-function AIService:Spawn(entityName)
+function AIService:Spawn(entityName, ...)
 	local entity = Assets:GetEntity(entityName)
-
+	entity.new(...)
 end
 
 function AIService:Start()
