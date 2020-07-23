@@ -9,8 +9,10 @@ function Entity.new(entityObject, info)
     self.Model = entityObject
     self.Humanoid = entityObject:WaitForChild("Humanoid")
     self.Root = entityObject:WaitForChild("HumanoidRootPart")
+    self.Info = info;
 
-    self.Model.Parent = workspace:WaitForChild("")
+    self.Model:SetPrimaryPartCFrame(self:FindSpawnLocation())
+    self.Model.Parent = workspace:WaitForChild("Zombies")
 
     spawn(function()
         while not self._Destroyed do
@@ -20,6 +22,10 @@ function Entity.new(entityObject, info)
     end)
 
     return self
+end
+
+function Entity:FindSpawnLocation()
+    return CFrame.new(-77, 8.439, 69)
 end
 
 function Entity:TakeDamage(damage)
@@ -40,6 +46,31 @@ function Entity:Destroy()
     self._Destroyed = true
 end
 
+local Functions = {
+    ["%*%*([^%*]*)%*%*"] = "<b>%s</b>";
+    ["__([^%*]*)__"] = "<b>%s</b>";
+    ["%*([^%*]*)%*"] = "<i>%s</i>";
+    ["_([^%*]*)_"] = "<b>%s</b>";
+    ["~([^%*]*)~"] = "<s>%s</s>";
+}
+
+function Format(text)
+    for i,v in pairs(Functions) do
+        text = text:gsub(i, function(text)
+            return v:format(text)
+        end)
+    end
+    return text
+end
+
+print(
+
+    loc
+    ("**text**"):gsub("", function(word)
+        return ("<b>%s</b>"):format(word)
+    end)
+)
+
 function Entity:Step()
     -- Actual game will have flock movements to make sure NPCs dont hit eachother and to lessen the server stress
     -- Maybe also add "aggro" so that the most damage-dealing player gets priority of getting eaten
@@ -53,10 +84,14 @@ function Entity:Step()
 
             if character and root then
                 if closestPlayer == nil then
-                    closestPlayer = player; magnitude = (root.Position - self.Root.Position).Magnitude
+                    local nMagnitude = (root.Position - self.Root.Position).Magnitude
+                    if nMagnitude < self.Info.FollowDistance then
+                        closestPlayer = player;
+                        magnitude = nMagnitude
+                    end
                 else
                     local nMagnitude = (root.Position - self.Root.Position).Magnitude
-                    if nMagnitude < magnitude then
+                    if nMagnitude < magnitude and nMagnitude < self.Info.FollowDistance then
                         closestPlayer = player;
                         magnitude = nMagnitude;
                     end
@@ -70,7 +105,7 @@ function Entity:Step()
     local closestPlayer, magnitude = getClosestPlayer();
     if closestPlayer then
 
-        if magnitude < 5 then
+        if magnitude < self.Info.AttackDistance then
             -- Attack
         else
             local closestPlayerRoot = (closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart"))

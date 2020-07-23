@@ -4,7 +4,7 @@ local EntityInfo
 local Assets
 
 -- Constants
-local UNIT_LIMIT = 80
+local UNIT_LIMIT = 40
 
 local AIService = {Units = {}}
 
@@ -23,6 +23,9 @@ function AIService:Spawn(entityName)
 end
 
 function AIService:Start()
+    while wait(1) do
+        self:Spawn("Zombie")
+    end
 end
 
 function AIService:Init()
