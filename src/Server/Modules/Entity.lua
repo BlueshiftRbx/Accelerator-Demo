@@ -46,30 +46,7 @@ function Entity:Destroy()
     self._Destroyed = true
 end
 
-local Functions = {
-    ["%*%*([^%*]*)%*%*"] = "<b>%s</b>";
-    ["__([^%*]*)__"] = "<b>%s</b>";
-    ["%*([^%*]*)%*"] = "<i>%s</i>";
-    ["_([^%*]*)_"] = "<b>%s</b>";
-    ["~([^%*]*)~"] = "<s>%s</s>";
-}
 
-function Format(text)
-    for i,v in pairs(Functions) do
-        text = text:gsub(i, function(text)
-            return v:format(text)
-        end)
-    end
-    return text
-end
-
-print(
-
-    loc
-    ("**text**"):gsub("", function(word)
-        return ("<b>%s</b>"):format(word)
-    end)
-)
 
 function Entity:Step()
     -- Actual game will have flock movements to make sure NPCs dont hit eachother and to lessen the server stress
