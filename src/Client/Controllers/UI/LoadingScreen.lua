@@ -3,7 +3,7 @@ local RunService = game:GetService("RunService")
 local ContentProvider = game:GetService("ContentProvider")
 local SoundService = game:GetService("SoundService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
+local StarterGui = game:GetService("StarterGui")
 -- Controllers
 local DataController
 
@@ -29,6 +29,8 @@ function LoadingScreen:End()
 	self:SetVisible(false)
 	wait(0.5)
 	self.Controllers.Fade:In(1)
+
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
 end
 
 function LoadingScreen:Start()
