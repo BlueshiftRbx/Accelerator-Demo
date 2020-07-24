@@ -1,97 +1,60 @@
--- Services
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
+local AIService = {
+	Entities = {};
+}
 
--- Modules
-local Entity
-local EntityInfo
-local Assets
+AIService.ENTITY_LIMIT = 1;
+AIService.ENTITY_SPAWN_DELAY = 2;
+AIService.PATH_UPDATE_DELAY = 5;
+AIService.STEP_DELAY = 5;
 
--- Constants
-local UNIT_LIMIT = 1
+local Assets;
+local Entity;
+local EntityInfo;
+local Thread;
 
-local AIService = {Units = {}}
+function AIService:Spawn(entityName)
+	local entityModel = Assets:GetEntity(entityName)
+	local entityInfo = EntityInfo:GetInfo(entityName)
 
-function AIService:Spawn(entityName, spawnLoc)
-	local info = EntityInfo:GetInfo(entityName)
-
-	if info then
-		local bodyModel = Assets:GetEntity(entityName)
-
-		if bodyModel then
-			local size = Vector3.new(0, bodyModel:GetExtentsSize().Y/2 + 0.5, 0)
-
-			bodyModel:SetPrimaryPartCFrame(spawnLoc.CFrame + size)
-
-			local entity = Entity.new(bodyModel, info)
-
-			table.insert(self.Units, entity)
-
-			return entity
-		end
-	end
-end
-
-function AIService:GetClosestPlayer(entity)
-	if not entity.IsDestroyed then
-		local closest
-
-		for _, player in next, Players:GetPlayers() do
-			if player.Character then
-				local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-
-				if humanoid and humanoid.RootPart and humanoid.RootPart:IsDescendantOf(Workspace) and humanoid.Health > 0 then
-					local dist = (entity.Humanoid.RootPart.Position - humanoid.RootPart.Position).Magnitude
-
-					if closest and closest.Distance > dist then
-						closest = {
-							Target = player.Character;
-							Distance = dist;
-						}
-					elseif not closest then
-						closest = {
-							Target = player.Character;
-							Distance = dist;
-						}
-					end
-				end
-			end
-		end
-
-		return closest
+	if entityModel and entityInfo then
+		self.Entities[#self.Entities+1] = Entity.new(entityModel, entityInfo)
 	end
 end
 
 function AIService:Start()
-	while true do
-		if #self.Units < UNIT_LIMIT then
-			local unit = self:Spawn("Zombie", Workspace:WaitForChild("TestSpawn"))
-		end
-
-		for i,unit in next, self.Units do
-			if unit and unit.Character:IsDescendantOf(Workspace) then
-				local targetData = self:GetClosestPlayer(unit)
-
-				if targetData and targetData.Target ~= unit.Target then
-					unit:SetTarget(targetData.Target)
-				end
-
-				unit:Step()
-			else
-				if not unit.IsDestroyed then
-					unit:Destroy()
-				end
-				table.remove(self.Units, i)
+	Thread.Spawn(function() --> Spawn loop
+		while wait(self.ENTITY_SPAWN_DELAY) do
+			if #self.Entities < self.ENTITY_LIMIT then
+				self:Spawn("Zombie")
 			end
 		end
-		wait(0.1)
-	end
+	end)
+
+	Thread.Spawn(function() --> Pathfinding update loop
+		while wait(self.PATH_UPDATE_DELAY) do
+			for _, entity in next, self.Entities do
+				entity:UpdatePath()
+			end
+		end
+	end)
+
+	Thread.Spawn(function() --> Step loop
+		while wait(self.STEP_DELAY) do
+			for i=#self.Entities, 1, -1 do
+				local entity = self.Entities[i]
+				if entity._Destroyed then
+					table.remove(self.Entities, i);
+				end
+			end
+		end
+	end)
 end
 
 function AIService:Init()
-	Entity = self.Modules.Entity
-	EntityInfo = self.Shared.EntityInfo
-	Assets = self.Shared.Assets
+	Entity = self.Modules.Entity;
+	EntityInfo = self.Shared.EntityInfo;
+	Assets = self.Shared.Assets;
+	Thread = self.Shared.Thread;
 end
 
 return AIService

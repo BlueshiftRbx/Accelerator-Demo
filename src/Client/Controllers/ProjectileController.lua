@@ -24,7 +24,7 @@ function ProjectileController:Start()
 		self:CreateProjectile(owner, origin, goal)
 	end)
 
-	RunService.Stepped:Connect(function(_, dt)
+	RunService.Heartbeat:Connect(function(dt)
 		for i=#self.Projectiles, 1, -1 do
 			local projectile = self.Projectiles[i]
 

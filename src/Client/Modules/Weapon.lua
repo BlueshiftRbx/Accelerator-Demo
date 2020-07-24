@@ -79,8 +79,6 @@ function Weapon.new(tool, info)
 				end
 
 				self:Fire()
-
-				wait()
 			end
 		elseif self.FireMode == "Semi" then
 			self:Fire()

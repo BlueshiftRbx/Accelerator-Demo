@@ -1,23 +1,68 @@
--- Services
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
-local PathfindingService = game:GetService("PathfindingService")
-local AIService
+local Entity = {}
+Entity.__index = Entity
 
--- Modules
-local Maid
+Entity.STEP_DELAY = 0.5
 
--- References
-local zombiesFolder = Workspace:WaitForChild("Zombies")
-
--- Constants
-local VALID_STATUS = {
-	[Enum.PathStatus.Success] = true;
+local VALID_PATHFINDING_STATUS = {
+    [Enum.PathStatus.Success] = true;
 	[Enum.PathStatus.ClosestNoPath] = true;
 	[Enum.PathStatus.ClosestOutOfRange] = true;
 }
 
--- Methods
+local Players = game:GetService("Players")
+local PathfindingService = game:GetService("PathfindingService")
+
+local Maid;
+local Thread;
+
+function Entity.new(entityModel, entityInfo)
+    local self = setmetatable({
+        Path = {
+            Nodes = {};
+            Index = 1;
+
+            Discriminator = 1;
+        };
+        Target = nil;
+
+        Character = entityModel;
+        Humanoid = entityModel:WaitForChild("Humanoid");
+        Root = entityModel:WaitForChild("HumanoidRootPart");
+
+        Maid = Maid.new();
+    }, Entity)
+
+    self:Spawn();
+
+    return self
+end
+
+function Entity:Spawn()
+    self.Character:SetPrimaryPartCFrame(
+        workspace.TestSpawn.CFrame + Vector3.new(0,5,0)
+    )
+    self.Character.Parent = workspace.Zombies;
+end
+
+function Entity:GetClosestPlayer()
+    local closestPlayer, magnitude;
+
+    for _, player in pairs(Players:GetPlayers()) do
+        local character = player.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+
+        if character and root then
+            local newMagnitude = (root.Position - self.Root.Position).Magnitude
+            if newMagnitude < (magnitude or math.huge) then
+                closestPlayer = character;
+                magnitude = newMagnitude
+            end
+        end
+    end
+
+    return closestPlayer, magnitude
+end
+
 function Raycast(position1, position2, target)
 	if position1 and position2 and target then
 		local position = position1
@@ -43,136 +88,78 @@ function Raycast(position1, position2, target)
 	end
 end
 
-local Entity = {}
-Entity.__index = Entity
+function Entity:UpdatePath()
+    local target, magnitude = self:GetClosestPlayer()
 
-function Entity.new(entityObject, info)
-	local self = setmetatable({}, Entity)
+    if target then
+        self.Path.Discriminator += 1
 
-	self.Maid = Maid.new()
+        self.Target = target
 
-	self.Path = PathfindingService:CreatePath({
-		AgentRadius = 2;
-		AgentHeight = 5;
-		AgentCanJump = false;
-	})
+        local castResult = Raycast(self.Root.Position, target.PrimaryPart.Position, target)
 
-	self.Character = entityObject
-	self.Humanoid = entityObject:WaitForChild("Humanoid")
-	self.Info = info
+        if castResult and castResult.Instance:IsDescendantOf(self.Target) then
+            self.Path.Nodes = {self.Target.PrimaryPart};
+            self.Path.Index = 1;
 
-	self.Target = nil
-	self.IsMoving = false
-	self.IsDestroyed = false
+            self:MoveToNext();
+            return;
+        else
 
-	self.Maid:GiveTask(self.Path)
-	self.Maid:GiveTask(self.Humanoid)
-	self.Maid:GiveTask(self.Character)
+            local path = PathfindingService:CreatePath({
+                AgentRadius = 2;
+                AgentHeight = 5;
+                AgentCanJump = false;
+            });
 
-	-- Initialize
-	self.Character.Parent = zombiesFolder
+            path:ComputeAsync(self.Root.Position, target.PrimaryPart and target.PrimaryPart.Position)
 
-	return self
+            if VALID_PATHFINDING_STATUS[path.Status] then
+                self.Path.Nodes = {};
+                self.Path.Index = 1;
+
+                for i,wp in pairs(path:GetWaypoints()) do self.Path.Nodes[i]=wp.Position end;
+
+                self:MoveToNext();
+                return
+            end
+        end
+    end
+
+    self.Target = nil;
+    self.Path.Nodes = {};
+    self.Path.Index = 0
 end
 
-function Entity:SetTarget(newTarget)
-	if newTarget and newTarget:IsA("Model") then
-		if self.Target ~= newTarget then
-			if self.isMoving then
-				self.isMoving = false
-			end
+function Entity:MoveToNext()
+    if self.Target then
+        local path = self.Path
 
-			print("New target:", newTarget)
+        local currentDiscriminator = path.Discriminator
 
-			self.Target = newTarget
-		end
-	end
-end
+        path.Index += 1
+        if path.Index > #path.Nodes then path.Index = #path.Nodes end
 
-function Entity:Step()
-	self:DeterminePath()
-end
-
-function Entity:DeterminePath()
-	if self.Target and self.Target:IsDescendantOf(Workspace) then
-		local humanoid = self.Target:FindFirstChildOfClass("Humanoid")
-
-		if humanoid and humanoid.Health > 0 then
-			local castResult = Raycast(self.Humanoid.RootPart.Position, humanoid.RootPart.Position, self.Target)
-
-			if castResult and castResult.Instance:IsDescendantOf(self.Target) then
-				self:MoveTo()
-			else
-				self:TravelPath()
-			end
-		end
-	end
-end
-
-function Entity:MoveTo()
-	if self.Target and self.Target:IsDescendantOf(Workspace) then
-		if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
-			local humanoid = self.Target:FindFirstChildOfClass("Humanoid")
-
-			if humanoid and humanoid.Health > 0 then
-				self.IsMoving = true
-
-				self.Humanoid:MoveTo(humanoid.RootPart.Position)
-			end
-		end
-	end
-end
-
-function Entity:TravelPath()
-	if self.Target and self.Target:IsDescendantOf(Workspace) then
-		if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
-			local humanoid = self.Target:FindFirstChildOfClass("Humanoid")
-
-			if humanoid and humanoid.Health > 0 then
-				self.Path:ComputeAsync(self.Humanoid.RootPart.Position, humanoid.RootPart.Position)
-				if VALID_STATUS[self.Path.Status] then
-					print("Valid path status")
-					self.IsMoving = true
-
-					for _,waypoint in next, self.Path:GetWaypoints() do
-						if not self.IsMoving then
-							break
-						end
-
-						self.Humanoid:MoveTo(waypoint.Position)
-						self.Humanoid.MoveToFinished:Wait()
-					end
-
-					self.IsMoving  = false
-				end
-			end
-		end
-	end
-end
-
-function Entity:TakeDamage(damage)
-	if damage > 0 then
-		self.Humanoid:TakeDamage(damage)
-
-		if self.Humanoid.Health <= 0 then
-			self:Destroy()
-		end
-	end
-end
-
-function Entity:Destroy()
-	if not self.IsDestroyed then
-		self.IsDestroyed = true
-		-- Play death animation
-		-- Ragdoll?
-		-- Delete after X seconds
-		self.Maid:DoCleaning()
-	end
+        if path.Nodes and #path.Nodes > 0 then
+            if #path.Nodes >= path.Index then
+                local next = path.Nodes[path.Index]
+                if typeof(next) == 'Instance' then
+                    self.Humanoid:MoveTo(next.Position, next)
+                else
+                    self.Humanoid:MoveTo(next);
+                    self.Humanoid.MoveToFinished:Wait()
+                    if self.Discriminator == currentDiscriminator then
+                        self:MoveToNext()
+                    end
+                end
+            end
+        end
+    end
 end
 
 function Entity:Init()
-	AIService = self.Services.AIService
-	Maid = self.Shared.Maid
+    Maid = self.Shared.Maid;
+    Thread = self.Shared.Thread;
 end
 
 return Entity
