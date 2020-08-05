@@ -9,7 +9,7 @@ local WeaponInfo
 local Assets
 
 -- Constants
-local MAX_STUDS_ALLOWED = 300 -- The max amount of studs a projectile is allowed to travel before it is automatically deleted
+local MAX_STUDS_ALLOWED = 3000 -- The max amount of studs a projectile is allowed to travel before it is automatically deleted
 
 local ProjectileController = {
 	Projectiles = {};

@@ -12,7 +12,7 @@ local bulletsFolder = Workspace:WaitForChild("Bullets")
 local Player
 
 -- Constants
-local VELOCITY = 500
+local VELOCITY = 1000
 local GRAVITY = 9.81
 local MASS = 0.025
 
