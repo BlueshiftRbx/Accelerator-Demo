@@ -69,7 +69,7 @@ function AIService:Start()
 		end
 
 		for i,unit in next, self.Units do
-			if unit and unit.Character:IsDescendantOf(Workspace) then
+			if unit and unit.Humanoid.Health > 0 and unit.Character:IsDescendantOf(Workspace) then
 				local targetData = self:GetClosestPlayer(unit)
 
 				if targetData and targetData.Target ~= unit.Target then

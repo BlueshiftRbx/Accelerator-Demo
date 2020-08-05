@@ -61,6 +61,8 @@ function Weapon.new(tool, info)
 
 	self.ReloadSound.Parent = self.Handle
 
+	self.FireFX = info.Particles.FireFX
+
 	-- State properties
 	self.Busy = false
 	self.IsReloading = false
@@ -124,20 +126,22 @@ function Weapon:Fire()
 
 		self.FiringAnim:Play()
 
-		local effect = Assets:GetParticle("MuzzleFlash")
+		if self.FireFX then
+			local effect = Assets:GetParticle(self.FireFX)
 
-		if effect then
-			Debris:AddItem(effect, effect.Lifetime.Max)
+			if effect then
+				Debris:AddItem(effect, effect.Lifetime.Max)
 
-			effect.Parent = self.Barrel
+				effect.Parent = self.Barrel
 
-			effect:Emit(3)
+				effect:Emit(3)
+			end
 		end
 
 		-- NOTE Playing a sound normally sometimes restarts it (SoundService fixes it)
 		SoundService:PlayLocalSound(self.FiringSound)
 
-		ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p)
+		ProjectileController:CreateProjectile(Player, self.Barrel.WorldPosition, Mouse.Hit.p, self.Tool.Name)
 
 		wait(self.FireRate)
 

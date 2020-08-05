@@ -1,5 +1,6 @@
 return {
 	Config = {
+		Damage = 5;
 		ClipSize = 12;
 		FireMode = "Semi";
 		FireRate = 1;
@@ -14,4 +15,6 @@ return {
 		FiringSound = "";
 		ReloadSound = "";
 	};
+
+	Particles = {};
 };

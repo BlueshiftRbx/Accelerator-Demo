@@ -1,7 +1,11 @@
 return {
-    Name = "Zombie",
-    Health = 100,
+    Name = "Zombie";
+    Health = 100;
 
     AttackDistance = 5;
-    AttackDamage = {10,20};
+    AttackDamage = 10;
+
+    Animations = {
+        AttackAnim = "ZOMBIE_ATTACK"
+    };
 }

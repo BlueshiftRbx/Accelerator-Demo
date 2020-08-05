@@ -124,7 +124,7 @@ function WeaponController:Start()
 
 	local keyboard = UserInput:Get("Keyboard")
 	keyboard.KeyDown:Connect(function(key)
-		print(key)
+		--print(key)
 		if key == Enum.KeyCode.Backquote then
 			if self._Current then
 				self:Unequip()

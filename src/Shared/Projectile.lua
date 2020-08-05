@@ -32,10 +32,11 @@ end
 local Projectile = {}
 Projectile.__index = Projectile
 
-function Projectile.new(owner, origin, goal)
+function Projectile.new(owner, origin, goal, weaponName)
 	assert(typeof(owner) == "Instance" and owner:IsA('Player'), "Owner has to be of Player Instance.")
 	assert(typeof(origin) == "Vector3", "Origin has to be of Vector3 type.")
 	assert(typeof(goal) == "Vector3", "Goal has to be of Vector3 type.")
+	assert(type(weaponName) == "string", "WeaponName has to be of string type.")
 
 	local self = setmetatable({}, Projectile)
 
@@ -43,6 +44,7 @@ function Projectile.new(owner, origin, goal)
 	self.Goal = goal
 	self.Position = self.Origin
 	self.LastPosition = self.Origin
+	self.WeaponName = weaponName
 
 	self.Velocity = VELOCITY
 
@@ -55,7 +57,7 @@ function Projectile.new(owner, origin, goal)
 	end
 
 	if (Player and Player == owner) then
-		BulletService:Replicate(origin, goal)
+		BulletService:Replicate(origin, goal, weaponName)
 	end
 
 	return self
@@ -79,8 +81,6 @@ function Projectile:Step(dt)
 		self.Bullet.CFrame = LookAtCF(self.LastPosition + self.LookVector * (magnitude/2), self.Position)
 		self.Bullet.StartAttachment.Position = Vector3.new(0, 0, -magnitude/2)
 		self.Bullet.EndAttachment.Position = Vector3.new(0, 0, magnitude/2)
-
-		return false
 	end
 end
 

@@ -1,23 +1,14 @@
 -- Services
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
-local PathfindingService = game:GetService("PathfindingService")
-local AIService
 
 -- Modules
+local Assets
 local Maid
 
 -- References
 local zombiesFolder = Workspace:WaitForChild("Zombies")
 
--- Constants
-local VALID_STATUS = {
-	[Enum.PathStatus.Success] = true;
-	[Enum.PathStatus.ClosestNoPath] = true;
-	[Enum.PathStatus.ClosestOutOfRange] = true;
-}
-
--- Methods
 function Raycast(position1, position2, target)
 	if position1 and position2 and target then
 		local position = position1
@@ -51,26 +42,33 @@ function Entity.new(entityObject, info)
 
 	self.Maid = Maid.new()
 
-	self.Path = PathfindingService:CreatePath({
-		AgentRadius = 2;
-		AgentHeight = 5;
-		AgentCanJump = false;
-	})
-
 	self.Character = entityObject
 	self.Humanoid = entityObject:WaitForChild("Humanoid")
 	self.Info = info
 
 	self.Target = nil
+	self.IsAttacking = false
 	self.IsMoving = false
 	self.IsDestroyed = false
 
-	self.Maid:GiveTask(self.Path)
+	-- Cleanup
 	self.Maid:GiveTask(self.Humanoid)
 	self.Maid:GiveTask(self.Character)
 
 	-- Initialize
+	self.Humanoid.MaxHealth = info.Health
+	self.Humanoid.Health = info.Health
+
 	self.Character.Parent = zombiesFolder
+
+	-- Animations
+	self.AttackAnim = Assets:GetAnimation(self.Info.Animations.AttackAnim)
+
+	self.AttackAnim = self.Humanoid:LoadAnimation(self.AttackAnim)
+
+	self.AttackAnim.Name = "AttackAnim"
+	self.AttackAnim.Priority = Enum.AnimationPriority.Action
+	self.AttackAnim.Looped = false
 
 	return self
 end
@@ -82,31 +80,13 @@ function Entity:SetTarget(newTarget)
 				self.isMoving = false
 			end
 
-			print("New target:", newTarget)
-
 			self.Target = newTarget
 		end
 	end
 end
 
 function Entity:Step()
-	self:DeterminePath()
-end
-
-function Entity:DeterminePath()
-	if self.Target and self.Target:IsDescendantOf(Workspace) then
-		local humanoid = self.Target:FindFirstChildOfClass("Humanoid")
-
-		if humanoid and humanoid.Health > 0 then
-			local castResult = Raycast(self.Humanoid.RootPart.Position, humanoid.RootPart.Position, self.Target)
-
-			if castResult and castResult.Instance:IsDescendantOf(self.Target) then
-				self:MoveTo()
-			else
-				self:TravelPath()
-			end
-		end
-	end
+	self:MoveTo()
 end
 
 function Entity:MoveTo()
@@ -115,37 +95,70 @@ function Entity:MoveTo()
 			local humanoid = self.Target:FindFirstChildOfClass("Humanoid")
 
 			if humanoid and humanoid.Health > 0 then
+				if self.IsMoving then
+					self.IsMoving = false
+				end
+
 				self.IsMoving = true
 
 				self.Humanoid:MoveTo(humanoid.RootPart.Position)
+
+				local signal
+
+				signal = self.Humanoid.MoveToFinished:Connect(function()
+					signal:Disconnect()
+					self.IsMoving = false
+				end)
+
+				coroutine.wrap(function()
+					while self.IsMoving and not self.IsDestroyed do
+						local castResult = Raycast(
+							self.Humanoid.RootPart.Position,
+							humanoid.RootPart.Position,
+							self.Target
+						)
+
+						-- Jump if there's something blocking the path
+						if castResult then
+							local magnitude = (castResult.Position - self.Humanoid.RootPart.Position).Magnitude
+							if castResult.Instance:IsDescendantOf(self.Target) then
+								if magnitude <= self.Info.AttackDistance then
+									self:Attack(humanoid)
+								end
+							elseif not castResult.Instance:IsDescendantOf(self.Target) then
+								if magnitude <= 1 then
+									self.Humanoid.Jump = true
+								end
+							end
+						end
+						if castResult and not castResult.Instance:IsDescendantOf(self.Target) then
+							local magnitude = (castResult.Position - self.Humanoid.RootPart.Position).Magnitude
+
+							if magnitude <= 1 then
+								self.Humanoid.Jump = true
+							end
+						end
+
+						wait(0.1)
+					end
+				end)()
 			end
 		end
 	end
 end
 
-function Entity:TravelPath()
-	if self.Target and self.Target:IsDescendantOf(Workspace) then
-		if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
-			local humanoid = self.Target:FindFirstChildOfClass("Humanoid")
+function Entity:Attack(targetHum)
+	if targetHum and targetHum.Health > 0 then
+		if not self.IsAttacking then
+			self.IsAttacking = true
 
-			if humanoid and humanoid.Health > 0 then
-				self.Path:ComputeAsync(self.Humanoid.RootPart.Position, humanoid.RootPart.Position)
-				if VALID_STATUS[self.Path.Status] then
-					print("Valid path status")
-					self.IsMoving = true
+			self.AttackAnim:Play()
 
-					for _,waypoint in next, self.Path:GetWaypoints() do
-						if not self.IsMoving then
-							break
-						end
+			wait(self.AttackAnim.Length)
 
-						self.Humanoid:MoveTo(waypoint.Position)
-						self.Humanoid.MoveToFinished:Wait()
-					end
+			targetHum:TakeDamage(self.Info.AttackDamage)
 
-					self.IsMoving  = false
-				end
-			end
+			self.IsAttacking = false
 		end
 	end
 end
@@ -171,8 +184,8 @@ function Entity:Destroy()
 end
 
 function Entity:Init()
-	AIService = self.Services.AIService
 	Maid = self.Shared.Maid
+	Assets = self.Shared.Assets
 end
 
 return Entity
