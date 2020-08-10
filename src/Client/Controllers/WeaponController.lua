@@ -32,10 +32,10 @@ function WeaponController:RegisterWeapon(tool)
 
 				self._Weapons.Primary = weapon
 
-				Maid:GiveTask(weapon)
+				self.Maid:GiveTask(weapon)
 
 				if not self._Current then
-					--self:Equip("Primary")
+					self:Equip("Primary")
 				end
 			end
 		elseif CollectionService:HasTag(tool, "Secondary") then
@@ -48,31 +48,32 @@ function WeaponController:RegisterWeapon(tool)
 
 				self._Weapons.Secondary = weapon
 
-				Maid:GiveTask(weapon)
+				self.Maid:GiveTask(weapon)
 
-				if not self._Current then
-					--self:Equip("Secondary")
-				end
+				-- if not self._Current then
+				-- 	self:Equip("Secondary")
+				-- end
 			end
 		end
 	end
 end
 
 function WeaponController:Equip(slot)
-	if slot and slot ~= self._Current then
+	if slot ~= self._Current then
 		local weapon = self._Weapons[slot]
+
 		if weapon then
 			self._LastEquipped = slot
+
 			if self._Current then
 				self:Unequip()
 			end
 
 			local tool = weapon:GetTool()
 			self._Current = slot
+
 			if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
 				self.Humanoid:EquipTool(tool)
-
-				-- weapon:OnEquipped()
 
 				self:FireEvent("ToolEquipped")
 			end
@@ -96,15 +97,14 @@ function WeaponController:Unequip()
 		if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
 			self.Humanoid:UnequipTools()
 
-			-- weapon:OnUnequipped()
-
 			self:FireEvent("ToolUnequipped")
 		end
 	end
 end
 
 function WeaponController:CharacterAdded(newCharacter)
-	Maid:DoCleaning()
+	self.Maid:DoCleaning()
+
 	if newCharacter then
 		self.Character = newCharacter
 		self.Humanoid = self.Character:WaitForChild("Humanoid")
@@ -126,7 +126,7 @@ function WeaponController:CharacterAdded(newCharacter)
 end
 
 function WeaponController:Start()
-	Maid = Maid.new()
+	self.Maid = Maid.new()
 
 	local keyboard = UserInput:Get("Keyboard")
 	keyboard.KeyDown:Connect(function(key)
