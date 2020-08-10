@@ -2,6 +2,10 @@
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
+-- Modules
+local WeaponInfo
+
+-- Service
 local BulletService = {
 	Client = {};
 }

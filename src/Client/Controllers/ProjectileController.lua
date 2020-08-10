@@ -3,9 +3,6 @@ local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 local BulletService
 
--- Controllers
-local WeaponController
-
 -- Modules
 local Projectile
 local WeaponInfo
@@ -92,7 +89,6 @@ end
 
 function ProjectileController:Init()
 	BulletService = self.Services.BulletService
-	WeaponController = self.Controllers.WeaponController
 	Projectile = self.Shared.Projectile
 	WeaponInfo = self.Shared.WeaponInfo
 	Assets = self.Shared.Assets
