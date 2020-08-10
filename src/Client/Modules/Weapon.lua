@@ -27,6 +27,7 @@ function Weapon.new(tool, info)
 	self.Tool = tool
 	self.Handle = tool:WaitForChild("_Handle")
 	self.Barrel = self.Handle:WaitForChild("BarrelAttachment")
+	self.Humanoid = Player.Character:WaitForChild("Humanoid")
 
 	-- Data properties
 	self.ClipSize = info.Config.ClipSize
@@ -35,18 +36,16 @@ function Weapon.new(tool, info)
 	self.FireMode = info.Config.FireMode
 
 	-- Asset properties
-	local humanoid = Player.Character:WaitForChild("Humanoid")
-
 	self.HoldAnim = Assets:GetAnimation(info.Anims.HoldAnim)
 	self.FiringAnim = Assets:GetAnimation(info.Anims.FiringAnim)
 
-	self.HoldAnim = humanoid:LoadAnimation(self.HoldAnim)
+	self.HoldAnim = self.Humanoid:LoadAnimation(self.HoldAnim)
 
 	self.HoldAnim.Name = info.Anims.HoldAnim
 	self.HoldAnim.Priority = Enum.AnimationPriority.Movement
 	self.HoldAnim.Looped = true
 
-	self.FiringAnim = humanoid:LoadAnimation(self.FiringAnim)
+	self.FiringAnim = self.Humanoid:LoadAnimation(self.FiringAnim)
 
 	self.FiringAnim.Name = info.Anims.FiringAnim
 	self.FiringAnim.Priority = Enum.AnimationPriority.Action
@@ -72,20 +71,32 @@ function Weapon.new(tool, info)
 
 	-- Setup
 	self.Maid:GiveTask(tool.Activated:Connect(function()
-		if self.FireMode == "Automatic" then
-			local mouse = UserInput:Get("Mouse")
+		if self.Humanoid.Health > 0 then
+			if self.FireMode == "Automatic" then
+				local mouse = UserInput:Get("Mouse")
 
-			while mouse:IsButtonPressed(Enum.UserInputType.MouseButton1) do
-				if self.Ammo <= 0 then
-					break
+				while mouse:IsButtonPressed(Enum.UserInputType.MouseButton1) do
+					if self.Ammo <= 0 then
+						break
+					end
+
+					if Player.Character then
+						if not self.Tool:IsDescendantOf(Player.Character) then
+							break
+						end
+					end
+
+					if self.Humanoid.Health <= 0 then
+						break
+					end
+
+					self:Fire()
+
+					wait()
 				end
-
+			elseif self.FireMode == "Semi" then
 				self:Fire()
-
-				wait()
 			end
-		elseif self.FireMode == "Semi" then
-			self:Fire()
 		end
 	end))
 
@@ -170,12 +181,7 @@ function Weapon:GetTool()
 end
 
 function Weapon:Destroy()
-	self.Tool = nil
-	self.ClipSize = nil
-	self.Ammo = nil
-	self.FireRate = nil
 	self.Maid:DoCleaning()
-	self.Maid = nil
 end
 
 function Weapon:Init()

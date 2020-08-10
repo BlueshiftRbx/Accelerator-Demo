@@ -80,19 +80,25 @@ function WeaponController:Equip(slot)
 	end
 end
 
-function WeaponController:Unequip()
+function WeaponController:GetCurrentWeapon()
 	if self._Current then
 		local weapon = self._Weapons[self._Current]
 
-		if weapon then
-			self._Current = nil
-			if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
-				self.Humanoid:UnequipTools()
+		return weapon
+	end
+end
 
-				-- weapon:OnUnequipped()
+function WeaponController:Unequip()
+	local weapon = self:GetCurrentWeapon()
 
-				self:FireEvent("ToolUnequipped")
-			end
+	if weapon then
+		self._Current = nil
+		if self.Humanoid and self.Humanoid:IsDescendantOf(Workspace) then
+			self.Humanoid:UnequipTools()
+
+			-- weapon:OnUnequipped()
+
+			self:FireEvent("ToolUnequipped")
 		end
 	end
 end

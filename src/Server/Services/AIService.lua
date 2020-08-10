@@ -2,32 +2,53 @@
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
+-- References
+local spawnFolder = Workspace:WaitForChild("Spawns")
+
 -- Modules
 local Entity
 local EntityInfo
 local Assets
 
 -- Constants
-local UNIT_LIMIT = 1
+local UNIT_LIMIT = 20
 
+-- Variables
+local spawnDB = {} -- NOTE prevents entities from being spawned at the same time
+
+-- Service
 local AIService = {Units = {}}
 
-function AIService:Spawn(entityName, spawnLoc)
+function AIService:Spawn(entityName)
 	local info = EntityInfo:GetInfo(entityName)
 
 	if info then
 		local bodyModel = Assets:GetEntity(entityName)
 
 		if bodyModel then
-			local size = Vector3.new(0, bodyModel:GetExtentsSize().Y/2 + 0.5, 0)
+			local spawns = spawnFolder:GetChildren()
 
-			bodyModel:SetPrimaryPartCFrame(spawnLoc.CFrame + size)
+			if #spawns > 0 then
+				local spawnLoc = spawns[math.random(#spawns)]
 
-			local entity = Entity.new(bodyModel, info)
+				if spawnLoc:IsA("BasePart") and not spawnDB[spawnLoc] then
+					spawnDB[spawnLoc] = true
 
-			table.insert(self.Units, entity)
+					local spawnOffset = Vector3.new(0, spawnLoc.Size.Y/2, 0)
+					local bodyOffset = Vector3.new(0, bodyModel:GetExtentsSize().Y/2, 0)
 
-			return entity
+					bodyModel:SetPrimaryPartCFrame(spawnLoc.CFrame + spawnOffset + bodyOffset)
+
+					local entity = Entity.new(bodyModel, info)
+
+					table.insert(self.Units, entity)
+
+					coroutine.wrap(function()
+						wait(1)
+						spawnDB[spawnLoc] = nil
+					end)()
+				end
+			end
 		end
 	end
 end
@@ -65,7 +86,7 @@ end
 function AIService:Start()
 	while true do
 		if #self.Units < UNIT_LIMIT then
-			local unit = self:Spawn("Zombie", Workspace:WaitForChild("TestSpawn"))
+			self:Spawn("Zombie")
 		end
 
 		for i,unit in next, self.Units do

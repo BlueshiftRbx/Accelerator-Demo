@@ -5,6 +5,7 @@ local BulletService
 
 -- Modules
 local Assets
+local Maid
 
 -- References
 local charactersFolder = Workspace:WaitForChild("Characters")
@@ -29,6 +30,7 @@ function LookAtCF(origin, direction) -- NOTE Creates a CFrame object from origin
 	return CFrame.fromMatrix(direction, rightVect, upVect2, rightVect:Cross(upVect2).Unit)
 end
 
+-- Module
 local Projectile = {}
 Projectile.__index = Projectile
 
@@ -42,22 +44,27 @@ function Projectile.new(owner, origin, goal, weaponName)
 
 	self.Origin = origin
 	self.Goal = goal
-	self.Position = self.Origin
-	self.LastPosition = self.Origin
 	self.WeaponName = weaponName
 
+	self.Position = self.Origin
+	self.LastPosition = self.Origin
 	self.Velocity = VELOCITY
+
+	self.Maid = Maid.new()
 
 	self.LookVector = LookAtCF(origin, goal).LookVector
 
 	if (RunService:IsClient()) then -- If client then create visual representation of the bullet.
 		self.Bullet = Assets:GetBullet("Bullet")
 		self.Bullet.CFrame = CFrame.new(self.Origin)
+
+		self.Maid:GiveTask(self.Bullet)
+
 		self.Bullet.Parent = bulletsFolder
 	end
 
 	if (Player and Player == owner) then
-		BulletService:Replicate(origin, goal, weaponName)
+		BulletService:Replicate(origin, goal)
 	end
 
 	return self
@@ -84,9 +91,9 @@ function Projectile:Step(dt)
 	end
 end
 
-function Projectile:Raycast(position1, position2)
-	local position = position1
-	local direction = (position2 - position1).Unit * (position2 - position1).Magnitude
+function Projectile:Raycast(origin, goal)
+	local position = origin
+	local direction = (goal - origin).Unit * (goal - origin).Magnitude
 
 	local rayParams = RaycastParams.new()
 
@@ -100,14 +107,16 @@ function Projectile:Raycast(position1, position2)
 end
 
 function Projectile:Destroy()
-	if self.Bullet then
-		self.Bullet:Destroy()
+	if not self.IsDestroyed then
+		self.IsDestroyed = true
+		self.Maid:DoCleaning()
 	end
 end
 
 function Projectile:Init()
 	BulletService = self.Services.BulletService
 	Assets = self.Shared.Assets
+	Maid = self.Shared.Maid
 
 	if RunService:IsClient() then
 		Player = self.Player
