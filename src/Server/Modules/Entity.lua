@@ -71,7 +71,7 @@ function Entity.new(entityObject, info)
 	self.AttackDamage = info.Config.AttackDamage
 	self.WalkSpeed = info.Config.WalkSpeed
 
-	self.IsInSpawn = false
+	self.IsInSpawn = true
 	self.IsAttacking = false
 	self.IsMoving = false
 	self.IsDestroyed = false
@@ -148,12 +148,12 @@ function Entity.new(entityObject, info)
 	end))
 
 	self.Maid:GiveTask(self.Humanoid.Running:Connect(function(speed)
-		if speed > 0 then
+		if speed > 0 or speed < 0 then
 			if not self.RunAnim.IsPlaying then
 				self.RunAnim:Play()
 				UpdateAnimForDampening(self.Humanoid, self.RunAnim, speed)
 			end
-		else
+		elseif speed == 0 then
 			if self.RunAnim.IsPlaying then
 				self.RunAnim:Stop()
 			end
