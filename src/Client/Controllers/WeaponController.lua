@@ -111,7 +111,7 @@ function WeaponController:CharacterAdded(newCharacter)
 		self.Backpack = self.Player:WaitForChild("Backpack")
 
 		--// Tool recognition
-		Maid:GiveTask(self.Backpack.ChildAdded:Connect(function(child)
+		self.Maid:GiveTask(self.Backpack.ChildAdded:Connect(function(child)
 			if child:IsA("Tool") and CollectionService:HasTag(child, "Weapon") then
 				self:RegisterWeapon(child)
 			end
