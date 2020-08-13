@@ -1,3 +1,5 @@
+-- Controllers
+---@type AeroController
 local Topbar = {}
 
 function Topbar:SetText(text)

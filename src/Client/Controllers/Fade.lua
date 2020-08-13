@@ -3,70 +3,72 @@
 -- February 4, 2017
 
 --[[
-	
-	
+
+
 	METHODS:
-	
+
 		Fade:In([duration [, async] ])                  Fade in from black
 		Fade:Out([duration [, async] ])                 Fade out to black
-		
+
 		Fade:To(transparency [, duration [, async] ])   Fade to the given transparency level
 		Fade:FromTo(from, to [, duration [, async] ])   Fade from one transparency level to another
-		
+
 		Fade:SetText(text)                              Set text to show on fade screen
 		Fade:ClearText()                                Sets text to a blank string
 		Fade:SetTextSize(size)				Sets the text size (0 for auto scaling)
 		Fade:SetFont(font)                              Sets the font
-		
+
 		Fade:SetBackgroundColor(color)                  Set the fade color (can be a Color3 or BrickColor)
 		Fade:SetTextColor(color)                        Set the text color (can be a Color3 or BrickColor)
-		
+
 		Fade:SetEasingStyle(easingStyle)                Set the easing style (e.g. Enum.EasingStyle.Quad)
-		
+
 		Fade:GetScreenGui()                             Returns the ScreenGui for this fade system
 		Fade:GetFrame()                                 Returns the overlay Frame
 		Fade:GetLabel()                                 Returns the TextLabel used for showing text
-	
-	
+
+
 	EVENTS:
-		
+
 		Fade.Started()
 		Fade.Ended()
-	
-	
-	
+
+
+
 	EXAMPLES:
-		
+
 		-- Hello fade:
 		Fade:SetText("Hello")
 		Fade:Out()
 		wait(1)
 		Fade:In()
-		
+
 		-- Slow fade:
 		Fade:ClearText()
 		Fade:Out(5)
 		wait(1)
 		Fade:In(5)
-		
+
 		-- Half fade:
 		Fade:To(0.5)
-		
+
 		-- Asynchronous w/ events:
 		Fade.Ended:connect(function()
 			print("Fade ended!")
 		end)
 		Fade:Out(1, true)
-	
-	
-	
-	
+
+
+
+
 	Note: This module is dependent on the Tween module.
-	
+
 --]]
 
 
 
+-- Controller
+---@type AeroController
 local Fade = {}
 
 
@@ -191,13 +193,13 @@ end
 
 -- Fade from a transparency to another:
 function Fade:FromTo(fromTransparency, toTransparency, duration, async)
-	
+
 	assert(type(fromTransparency) == "number", "'fromTransparency' argument must be a number")
 	assert(type(toTransparency) == "number", "'toTransparency' argument must be a number")
 	assert(duration == nil or type(duration) == "number", "'duration' argument must be a number or nil")
-	
+
 	duration = (duration or DEFAULT_DURATION)
-	
+
 	if (duration <= 0) then
 		-- Instant fade; skip everything else:
 		self:FireEvent(fadeStartedEvent)
@@ -206,22 +208,22 @@ function Fade:FromTo(fromTransparency, toTransparency, duration, async)
 		self:FireEvent(fadeEndedEvent)
 		return
 	end
-	
+
 	if (async == nil) then
 		async = DEFAULT_ASYNC
 	end
-	
+
 	-- If already fading, stop fading so we can prioritize this new fade:
 	if (currentTween) then
 		currentTween:Cancel()
 		currentTween = nil
 	end
-	
+
 	-- Fire Started event:
 	self:FireEvent(fadeStartedEvent)
-	
+
 	local deltaTransparency = (toTransparency - fromTransparency)
-	
+
 	-- Fade operation:
 	local tweenInfo = TweenInfo.new(
 		(duration or DEFAULT_DURATION),
@@ -233,22 +235,22 @@ function Fade:FromTo(fromTransparency, toTransparency, duration, async)
 		fade.BackgroundTransparency = transparency
 		label.TextTransparency = transparency
 	end)
-	
+
 	-- Start fading:
 	currentTween:Play()
-	
+
 	-- Await fade to end, then fire Ended event:
 	local function AwaitEnd()
 		currentTween.Completed:Wait()
 		self:FireEvent(fadeEndedEvent)
 	end
-	
+
 	if (async) then
 		coroutine.wrap(AwaitEnd)()
 	else
 		AwaitEnd()
 	end
-	
+
 end
 
 

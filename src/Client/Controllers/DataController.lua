@@ -1,3 +1,5 @@
+-- Controller
+---@type AeroController
 local DataController = {
 	Cached = {};
 	DataReady = false;

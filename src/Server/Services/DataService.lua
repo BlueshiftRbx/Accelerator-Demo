@@ -2,6 +2,8 @@
 -- Legoracer
 -- July 5, 2020
 
+-- Service
+---@type AeroService
 local DataService = {
 	Client = {};
 	ProxyCache = {}; --// ProxyCache fires metamethods!

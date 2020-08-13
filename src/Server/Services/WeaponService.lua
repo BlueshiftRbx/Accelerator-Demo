@@ -6,6 +6,8 @@ local DataService
 -- Modules
 local Assets
 
+-- Service
+---@type AeroService
 local WeaponService = {}
 
 function WeaponService:Start()

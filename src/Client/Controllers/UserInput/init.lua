@@ -3,30 +3,32 @@
 -- January 2, 2018
 
 --[[
-	
+
 	UserInput simply encapsulates all user input modules.
-	
+
 	UserInput.Preferred
 		- Keyboard
 		- Mouse
 		- Gamepad
 		- Touch
-	
+
 	UserInput:Get(inputModuleName)
 	UserInput:GetPreferred()
 
 	UserInput.PreferredChanged(preferred)
-	
-	
+
+
 	Example:
-	
+
 	local keyboard = userInput:Get("Keyboard")
 	keyboard.KeyDown:Connect(function(key) end)
-	
+
 --]]
 
 
 
+-- Controller
+---@type AeroController
 local UserInput = {}
 
 UserInput.HideMouse = false
@@ -57,7 +59,7 @@ function UserInput:Init()
 			modules[obj.Name] = module
 		end
 	end
-	
+
 	local function SetMouseIconEnabled(enabled)
 		if (self.HideMouse) then
 			userInput.MouseIconEnabled = enabled

@@ -19,6 +19,7 @@ local UNIT_LIMIT = 20
 local spawnLock = {}
 
 -- Service
+---@type AeroService
 local AIService = {Units = {}}
 
 function AIService:Spawn(entityName)

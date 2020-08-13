@@ -6,6 +6,7 @@ local Workspace = game:GetService("Workspace")
 local WeaponInfo
 
 -- Service
+---@type AeroService
 local BulletService = {
 	Client = {};
 }

@@ -11,6 +11,8 @@ local WIDTH = 2
 -- Variables
 local Mouse
 
+-- Controller
+---@type AeroController
 local Cursor = {};
 
 function Cursor:SetEnabled(enabled)

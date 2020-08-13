@@ -1,12 +1,21 @@
+-- Services
 local RunService = game:GetService("RunService")
 local RobloxStats = game:GetService("Stats")
-local ServerStats;
-
-local Stats = {};
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StatsService
+
+-- References
+local ServerStats = ReplicatedStorage:WaitForChild("ServerStats")
+
+-- Constants
+local STATS_STRING = "%dFPS   PING:%dms   PHYSX:%dms   MEM:%dMB   LUA_MEM:%dMB   %s"
+
+-- Controllers
 local Topbar
 
-local STATS_STRING = "%dFPS   PING:%dms   PHYSX:%dms   MEM:%dMB   LUA_MEM:%dMB   %s"
+-- Controller
+---@type AeroController
+local Stats = {}
 
 function Stats:FormatTime(seconds)
 	local function format(int)
@@ -32,13 +41,13 @@ function Stats:Start()
 		local physx = RobloxStats.PhysicsStepTimeMs
 		local scriptMem = RobloxStats:GetMemoryUsageMbForTag(Enum.DeveloperMemoryTag.Script)
 		local totalMem = RobloxStats:GetTotalMemoryUsageMb()
-		Topbar:SetText(STATS_STRING:format(fps, self:GetPing(), physx, totalMem, scriptMem, self:FormatTime(ServerStats.Age.Value)))
+		local serverAge = ServerStats:WaitForChild("Age")
+		Topbar:SetText(STATS_STRING:format(fps, self:GetPing(), physx, totalMem, scriptMem, self:FormatTime(serverAge.Value)))
 	end
 end
 
 function Stats:Init()
 	StatsService = self.Services.StatsService
-	ServerStats = game:GetService("ReplicatedStorage"):WaitForChild("ServerStats")
 	Topbar = self.Controllers.UI.UIControllers.Topbar
 end
 

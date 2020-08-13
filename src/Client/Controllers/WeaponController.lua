@@ -8,6 +8,8 @@ local Weapon
 local WeaponInfo
 local Maid
 
+-- Controller
+---@type AeroController
 local WeaponController = {
 	_Current = nil;
 

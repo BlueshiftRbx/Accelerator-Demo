@@ -1,3 +1,5 @@
+-- Controller
+---@type AeroController
 local Ammo = {};
 
 function Ammo:SetAmmo(ammo)

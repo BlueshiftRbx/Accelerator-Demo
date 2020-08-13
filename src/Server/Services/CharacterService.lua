@@ -1,13 +1,15 @@
 -- Services
 local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
 
+---@type AeroService
 local CharacterService = {}
 
 function CharacterService:CharacterAdded(player, character)
 	if character then
 		repeat wait() until character.Parent == workspace;
 		wait(0.1)
-		character.Parent = workspace.Characters
+		character.Parent = Workspace:WaitForChild("Characters")
 	end
 end
 

@@ -2,18 +2,21 @@
 local RunService = game:GetService("RunService")
 local ContentProvider = game:GetService("ContentProvider")
 local SoundService = game:GetService("SoundService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
+
 -- Controllers
 local DataController
 
 -- Modules
 local UserInput
 local Maid
+local Assets
 
 local SKIP_INTRO = RunService:IsStudio()
 
 
+-- Controllers
+---@type AeroController
 local LoadingScreen = {}
 
 function LoadingScreen:SetVisible(visibility)
@@ -41,7 +44,7 @@ function LoadingScreen:Start()
 	end
 
 	--// Preload sound and icon;
-	local introSound = ReplicatedStorage.Assets.Sounds.Intro
+	local introSound = Assets:GetSound("Intro")
 	ContentProvider:PreloadAsync({
 		introSound, self.LoadingMenu.Background, self.LoadingMenu.Logo
 	})
@@ -64,17 +67,19 @@ function LoadingScreen:Start()
 
 	--// Wait for user input
 	self:SetTitleText("Click anywhere to continue")
+
 	local keyboard = UserInput:Get("Keyboard")
 	local mouse = UserInput:Get("Mouse")
 
-	local e1, e2 --> Events to be disconnected
-	e1 = keyboard.KeyDown:Connect(function()
-		e1:Disconnect(); e2:Disconnect();
-		self:End()
-	end)
+	self.Maid:GiveTask(keyboard.KeyDown:Connect(function()
+		self.Maid:DoCleaning()
+	end))
 
-	e2 = mouse.LeftDown:Connect(function()
-		e1:Disconnect(); e2:Disconnect();
+	self.Maid:GiveTask(mouse.LeftDown:Connect(function()
+		self.Maid:DoCleaning()
+	end))
+
+	self.Maid:GiveTask(function()
 		self:End()
 	end)
 end
@@ -83,6 +88,7 @@ function LoadingScreen:Init()
 	DataController = self.Controllers.DataController
 	UserInput = self.Controllers.UserInput
 	Maid = self.Shared.Maid
+	Assets = self.Shared.Assets
 
 	self.Maid = Maid.new()
 

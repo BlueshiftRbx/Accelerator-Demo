@@ -6,6 +6,8 @@ local assetsFolder = ReplicatedStorage:WaitForChild("Assets")
 local UIFolder = assetsFolder:WaitForChild("UI")
 local mainHUD = UIFolder:WaitForChild("MainUI")
 
+-- Controller
+---@type AeroController
 local UI = {
 	__aeroOrder = 0;
 	__aeroPreventStart = true;

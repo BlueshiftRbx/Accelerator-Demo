@@ -13,6 +13,7 @@ local Maid
 local MAX_STUDS_ALLOWED = 3000
 
 -- Controller
+---@type AeroController
 local ProjectileController = {
 	Projectiles = {};
 }

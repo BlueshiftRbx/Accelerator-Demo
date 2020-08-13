@@ -1,5 +1,7 @@
 -- Literally the most useless service, but yeah...
 
+-- Service
+---@type AeroService
 local StatsService = {Client={}}
 
 function StatsService.Client:Ping()
